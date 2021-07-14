@@ -50,29 +50,29 @@ class Board
   end
 
   def display_board
-    counter = 0
     @squares.each_with_index do |row, idx_row|
       print (idx_row - 8).abs," "
       row.each_with_index do |square, idx_square|
-          if square.nil?
-            print "   ".bg_gray if counter.even?
-            print "   ".bg_black if counter.odd?
-         
-          else
-             print " #{square.unicode}".bg_gray if counter.even?
-             print " #{square.unicode}".bg_black if counter.odd?
-          end
-          counter += 1 unless idx_square == 7
-          
+        if (idx_row.even? && idx_square.even?) || (idx_row.odd? && idx_square.odd?)
+          print " #{square.unicode}".bg_black
+        else
+          print " #{square.unicode}".bg_gray
+        end
       end
       print "\n"
     end
     print "   a  b  c  d  e  f  g  h \n"
-    
   end
 
 
 end
+
+class NilClass
+  def unicode
+    "  "
+  end
+end
+
 
 board = Board.new
 
