@@ -12,11 +12,11 @@ class Board
 
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
-    init_black
-    init_white
+    setup_black
+    setup_white
   end
 
-  def init_white
+  def setup_white
     @squares[7] = [Rook.new([7, 0], 'white'),
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
@@ -28,7 +28,7 @@ class Board
     @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
-  def init_black
+  def setup_black
     @squares[0] = [Rook.new([0, 0], 'black'),
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
@@ -51,13 +51,13 @@ class Board
 
   def display_board
     @squares.each_with_index do |row, idx_row|
-      print (idx_row - 8).abs," "
+      print (idx_row - 8).abs, ' '
       row.each_with_index do |square, idx_square|
-        black_square?(idx_row, idx_square) ? print(" #{square.unicode}".bg_black) : print(" #{square.unicode}".bg_gray)
+        print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
       end
       print "\n"
     end
-    print "   a  b  c  d  e  f  g  h \n"
+    print "  a b c d e f g h \n"
   end
   
   private
