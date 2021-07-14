@@ -52,22 +52,23 @@ class Board
   def display_board
     counter = 0
     @squares.each_with_index do |row, idx_row|
-      print (idx_row - 8).abs
+      print (idx_row - 8).abs," "
       row.each_with_index do |square, idx_square|
           if square.nil?
             print "   ".bg_gray if counter.even?
             print "   ".bg_black if counter.odd?
          
           else
-             print " #{square.unicode} ".bg_gray if counter.even?
-             print " #{square.unicode} ".bg_black if counter.odd?
+             print " #{square.unicode}".bg_gray if counter.even?
+             print " #{square.unicode}".bg_black if counter.odd?
           end
           counter += 1 unless idx_square == 7
           
       end
       print "\n"
     end
-    print "  a  b  c  d  e  f  g  h \n"
+    print "   a  b  c  d  e  f  g  h \n"
+    
   end
 
 
