@@ -9,19 +9,16 @@ class ChessGame
     loop do
       @board.display_board
       puts "White turn\nPlease enter the piece you would like to move:"
-      print display_legal_moves(to_coordinates(input_player))
+      puts "The piece can move to:\n#{legal_moves(to_coordinates(algebraic_input_player)).join(' ')}"
     end
-      
-      
-    
   end
 
-  def display_legal_moves(coordinates)
-    legal_moves = @board.prepare_piece(coordinates)
-    legal_moves.map { |move| to_algebraic(move) }
+  def legal_moves(coordinates)
+    piece_moves = @board.prepare_piece(coordinates)
+    piece_moves.map { |move| to_algebraic(move) }
   end
 
-  def input_player
+  def algebraic_input_player
     loop do
       input = gets.chomp
       return input if input.match?(/[a-h][1-8]/)

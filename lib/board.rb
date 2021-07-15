@@ -40,6 +40,10 @@ class Board
     @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
   end
 
+  def prepare_piece(coordinates)
+    @squares[coordinates.first][coordinates.last].legal_moves
+  end
+
   def move_piece!(piece, from_square, to_square)
     @squares[to_square[0]][to_square[1]] = piece
     @squares[from_square[0]][from_square[1]] = nil
@@ -76,10 +80,11 @@ class NilClass
 end
 
 
-board = Board.new
+#board = Board.new
 
-board.move_piece! Pawn.new([0,0], "white"), [6,0], [5,0]
-board.display_board
+#board.move_piece! Pawn.new([0,0], "white"), [6,0], [5,0]
+#board.display_board
+#print board.prepare_piece([7, 0])
 
 #board.move_piece! Pawn.new([0,0], "white"), [5,0], [4,0]
 #board.display_board

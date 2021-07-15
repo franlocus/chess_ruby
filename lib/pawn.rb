@@ -3,7 +3,7 @@ class Pawn < Piece
   def setup_vectors
     moves_vector = @color == "white" ? [[-1, 0]]  : [[1, 0]]
     unless @has_moved
-      @color == "white" ?  moves_vector.push([-2, 0]) :  moves_vector.push([2, 0])
+      @color == "white" ?  moves_vector.push([-2, 0]) : moves_vector.push([2, 0])
     end
     @has_moved ||= true
     moves_vector

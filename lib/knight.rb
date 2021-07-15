@@ -8,7 +8,7 @@ class Knight < Piece
   end
 
   def unicode
-    @color == "white" ? "♘" : "♞"
+    @color == "white" ? "♘ ".cyan : "♞ ".yellow 
   end
   
 end

@@ -8,7 +8,7 @@ class King < Piece
   end
   
   def unicode
-    @color == "white" ? "♔" : "♚" 
+    @color == "white" ? "♔ ".cyan : "♚ ".yellow 
   end
   
 end
