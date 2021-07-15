@@ -1,18 +1,15 @@
 class Pawn < Piece
 
-  def setup_vectors
-    moves_vector = @color == "white" ? [[-1, 0]]  : [[1, 0]]
-    unless @has_moved
-      @color == "white" ?  moves_vector.push([-2, 0]) : moves_vector.push([2, 0])
+  def legal_moves(board)
+    moves_vector = []
+    if @has_moved.nil?
+      moves_vector += upward_moves(board).first(2)
+    else
+      moves_vector += [upward_moves(board).first]
     end
-    @has_moved ||= true
+    @has_moved = true
     moves_vector
-  end
-
-  def legal_moves
-    setup_vectors
-      .map { |y, x| [square[0] + y, square[1] + x] }
-      .keep_if { |move| move[0].between?(0, 7) && move[1].between?(0, 7) }
+     
   end
 
   def unicode
