@@ -8,13 +8,13 @@ class ChessGame
   def play_game
     loop do
       @board.display_board
-      puts "White turn\nPlease enter the piece you would like to move:"
-      puts "The piece can move to:\n#{legal_moves(to_coordinates(algebraic_input_player)).join(' ')}"
+      puts "#{'White turn'.underline}\nPlease enter the piece you would like to move:"
+      puts "The piece can move to:\n#{algebraic_legal_moves(to_coordinates(algebraic_input_player)).join(' ')}".green
     end
   end
 
-  def legal_moves(coordinates)
-    piece_moves = @board.prepare_piece(coordinates)
+  def algebraic_legal_moves(coordinates)
+    piece_moves = @board.legal_moves(coordinates)
     piece_moves.map { |move| to_algebraic(move) }
   end
 

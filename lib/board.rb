@@ -14,6 +14,7 @@ class Board
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
     setup_white
+    @squares[4][4] = Queen.new([4, 4], 'black')
   end
 
   def setup_white
@@ -25,7 +26,7 @@ class Board
                    Bishop.new([7, 5], 'white'),
                    Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
-    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
+    #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_black
@@ -40,8 +41,20 @@ class Board
     @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
   end
 
-  def prepare_piece(coordinates)
-    @squares[coordinates.first][coordinates.last].legal_moves
+  def piece?(coordinates)
+    !@squares[coordinates.first][coordinates.last].nil?
+  end
+
+  #def piece(coordinates)
+  #  @squares[coordinates.first][coordinates.last]
+  #end
+
+  def color_piece(coordinates)
+    @squares[coordinates.first][coordinates.last].color
+  end
+
+  def legal_moves(coordinates)
+    @squares[coordinates.first][coordinates.last].legal_moves(self)
   end
 
   def move_piece!(piece, from_square, to_square)

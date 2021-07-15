@@ -1,14 +1,10 @@
 class Rook < Piece
 
-  def legal_moves
-    moves_vector = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
-                    [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
-                    [-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0], [-6, 0], [-7, 0],
-                    [0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7]]
-    moves_vector
-      .map { |y, x| [square[0] + y, square[1] + x] }
-      .keep_if { |move| move[0].between?(0, 7) && move[1].between?(0, 7) }
+  def legal_moves(board)
+    upward_moves(board) + rightward_moves(board) + downward_moves(board) + leftward_moves(board)
   end
+
+  
 
   def unicode
     @color == "white" ? "♖ ".cyan : "♜ ".yellow  
