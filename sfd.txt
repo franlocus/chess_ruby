@@ -1,0 +1,6 @@
+ if board.piece?([upright_moves(board).first]) && (board.color_piece([upright_moves(board).first]) != color) 
+      additional_moves << [upright_moves(board).first]
+    end
+    if board.piece?([upleft_moves(board).first]) && (board.color_piece([upleft_moves(board).first]) != color) 
+      additional_moves << [upleft_moves(board).first]
+    end
