@@ -11,113 +11,96 @@ class Piece
   def upward_moves(board, upward = [], current_position = @square)
     loop do
       current_position = [current_position.first - 1, current_position.last]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return upward unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        upward << current_position 
-        break
-      end
+      return upward << current_position if board.enemy_piece?(current_position, color)
+      return upward if board.piece?(current_position)
+
       upward << current_position
     end
-    upward
   end
 
   def rightward_moves(board, rightward = [], current_position = @square)
     loop do
       current_position = [current_position.first, current_position.last + 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return rightward unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        rightward << current_position 
-        break
-      end
+      return rightward << current_position if board.enemy_piece?(current_position, color)
+      return rightward if board.piece?(current_position)
+
       rightward << current_position
     end
-    rightward
   end
 
   def downward_moves(board, downward = [], current_position = @square)
     loop do
       current_position = [current_position.first + 1, current_position.last]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return downward unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        downward << current_position 
-        break
-      end
+      return downward << current_position if board.enemy_piece?(current_position, color)
+      return downward if board.piece?(current_position)
+
       downward << current_position
     end
-    downward
   end
 
   def leftward_moves(board, leftward = [], current_position = @square)
     loop do
       current_position = [current_position.first, current_position.last - 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return leftward unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        leftward << current_position 
-        break
-      end
+      return leftward << current_position if board.enemy_piece?(current_position, color)
+      return leftward if board.piece?(current_position)
+
       leftward << current_position
     end
-    leftward
   end
 
   def upright_moves(board, upright = [], current_position = @square)
     loop do
       current_position = [current_position.first - 1, current_position.last + 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return upright unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        upright << current_position 
-        break
-      end
+      return upright << current_position if board.enemy_piece?(current_position, color)
+      return upright if board.piece?(current_position)
+
       upright << current_position
     end
-    upright
   end
 
   def downright_moves(board, downright = [], current_position = @square)
     loop do
       current_position = [current_position.first + 1, current_position.last + 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return downright unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        downright << current_position 
-        break
-      end
+      return downright << current_position if board.enemy_piece?(current_position, color)
+      return downright if board.piece?(current_position)
+
       downright << current_position
     end
-    downright
   end
 
   def upleft_moves(board, upleft = [], current_position = @square)
     loop do
       current_position = [current_position.first - 1, current_position.last - 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return upleft unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        upleft << current_position 
-        break
-      end
+      return upleft << current_position if board.enemy_piece?(current_position, color)
+      return upleft if board.piece?(current_position)
+
       upleft << current_position
     end
-    upleft
   end
 
   def downleft_moves(board, downleft = [], current_position = @square)
     loop do
       current_position = [current_position.first + 1, current_position.last - 1]
-      break unless current_position.all? { |n| n.between?(0, 7) }
+      return downleft unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.enemy_piece?(current_position, color)
-        downleft << current_position 
-        break
-      end
+      return downleft << current_position if board.enemy_piece?(current_position, color)
+      return downleft if board.piece?(current_position)
+
       downleft << current_position
     end
-    downleft
   end
-  
 end
