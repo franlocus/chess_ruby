@@ -13,8 +13,8 @@ class Piece
       current_position = [current_position.first - 1, current_position.last]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        upward << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        upward << current_position 
         break
       end
       upward << current_position
@@ -27,8 +27,8 @@ class Piece
       current_position = [current_position.first, current_position.last + 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        rightward << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        rightward << current_position 
         break
       end
       rightward << current_position
@@ -41,8 +41,8 @@ class Piece
       current_position = [current_position.first + 1, current_position.last]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        downward << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        downward << current_position 
         break
       end
       downward << current_position
@@ -55,8 +55,8 @@ class Piece
       current_position = [current_position.first, current_position.last - 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        leftward << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        leftward << current_position 
         break
       end
       leftward << current_position
@@ -69,8 +69,8 @@ class Piece
       current_position = [current_position.first - 1, current_position.last + 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        upright << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        upright << current_position 
         break
       end
       upright << current_position
@@ -83,8 +83,8 @@ class Piece
       current_position = [current_position.first + 1, current_position.last + 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        downright << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        downright << current_position 
         break
       end
       downright << current_position
@@ -97,8 +97,8 @@ class Piece
       current_position = [current_position.first - 1, current_position.last - 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        upleft << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        upleft << current_position 
         break
       end
       upleft << current_position
@@ -111,14 +111,13 @@ class Piece
       current_position = [current_position.first + 1, current_position.last - 1]
       break unless current_position.all? { |n| n.between?(0, 7) }
 
-      if board.piece?(current_position)
-        downleft << current_position unless board.color_piece(current_position) == color
+      if board.enemy_piece?(current_position, color)
+        downleft << current_position 
         break
       end
       downleft << current_position
     end
     downleft
   end
-
   
 end
