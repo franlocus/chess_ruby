@@ -31,7 +31,7 @@ class Board
   end
 
   def setup_black
-    @squares[0] = [Rook.new([0, 0], 'black'),
+    @squares[0] = [nil,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
                    Queen.new([0, 3], 'black'),
@@ -44,6 +44,13 @@ class Board
 
   def piece?(coordinates)
     !@squares[coordinates.first][coordinates.last].nil?
+  end
+
+  def enemy_piece?(coordinates, caller_color)
+    return false unless coordinates.all? { |n| n.between?(0, 7) }
+
+    square_to_check = @squares[coordinates.first][coordinates.last]
+    !square_to_check.nil? && square_to_check != caller_color
   end
 
   #def piece(coordinates)
