@@ -50,17 +50,11 @@ class Board
     return false unless coordinates.all? { |n| n.between?(0, 7) }
 
     square_to_check = @squares[coordinates.first][coordinates.last]
-    !square_to_check.nil? && square_to_check != caller_color
-  end
-
-  #def piece(coordinates)
-  #  @squares[coordinates.first][coordinates.last]
-  #end
-
-  def color_piece(coordinates)
-    return nil if @squares[coordinates.first][coordinates.last].nil?
-
-    @squares[coordinates.first][coordinates.last].color
+    if square_to_check.nil?
+      false
+    else
+      square_to_check.color != caller_color
+    end
   end
 
   def legal_moves(coordinates)

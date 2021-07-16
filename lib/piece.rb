@@ -2,105 +2,110 @@ class Piece
 
   attr_accessor :square
   attr_reader :color
-  
+
   def initialize(square, color)
     @square = square
     @color = color
   end
 
-  def upward_moves(board, upward = [], current_position = @square)
+  def upward_moves(board, upward = [], cursor = @square)
     loop do
-      current_position = [current_position.first - 1, current_position.last]
-      return upward unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first - 1, cursor.last]
+      return upward unless within_board?(cursor)
 
-      return upward << current_position if board.enemy_piece?(current_position, color)
-      return upward if board.piece?(current_position)
+      return upward << cursor if board.enemy_piece?(cursor, color)
+      return upward if board.piece?(cursor)
 
-      upward << current_position
+      upward << cursor
     end
   end
 
-  def rightward_moves(board, rightward = [], current_position = @square)
+  def rightward_moves(board, rightward = [], cursor = @square)
     loop do
-      current_position = [current_position.first, current_position.last + 1]
-      return rightward unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first, cursor.last + 1]
+      return rightward unless within_board?(cursor)
 
-      return rightward << current_position if board.enemy_piece?(current_position, color)
-      return rightward if board.piece?(current_position)
+      return rightward << cursor if board.enemy_piece?(cursor, color)
+      return rightward if board.piece?(cursor)
 
-      rightward << current_position
+      rightward << cursor
     end
   end
 
-  def downward_moves(board, downward = [], current_position = @square)
+  def downward_moves(board, downward = [], cursor = @square)
     loop do
-      current_position = [current_position.first + 1, current_position.last]
-      return downward unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first + 1, cursor.last]
+      return downward unless within_board?(cursor)
 
-      return downward << current_position if board.enemy_piece?(current_position, color)
-      return downward if board.piece?(current_position)
+      return downward << cursor if board.enemy_piece?(cursor, color)
+      return downward if board.piece?(cursor)
 
-      downward << current_position
+      downward << cursor
     end
   end
 
-  def leftward_moves(board, leftward = [], current_position = @square)
+  def leftward_moves(board, leftward = [], cursor = @square)
     loop do
-      current_position = [current_position.first, current_position.last - 1]
-      return leftward unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first, cursor.last - 1]
+      return leftward unless within_board?(cursor)
 
-      return leftward << current_position if board.enemy_piece?(current_position, color)
-      return leftward if board.piece?(current_position)
+      return leftward << cursor if board.enemy_piece?(cursor, color)
+      return leftward if board.piece?(cursor)
 
-      leftward << current_position
+      leftward << cursor
     end
   end
 
-  def upright_moves(board, upright = [], current_position = @square)
+  def upright_moves(board, upright = [], cursor = @square)
     loop do
-      current_position = [current_position.first - 1, current_position.last + 1]
-      return upright unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first - 1, cursor.last + 1]
+      return upright unless within_board?(cursor)
 
-      return upright << current_position if board.enemy_piece?(current_position, color)
-      return upright if board.piece?(current_position)
+      return upright << cursor if board.enemy_piece?(cursor, color)
+      return upright if board.piece?(cursor)
 
-      upright << current_position
+      upright << cursor
     end
   end
 
-  def downright_moves(board, downright = [], current_position = @square)
+  def downright_moves(board, downright = [], cursor = @square)
     loop do
-      current_position = [current_position.first + 1, current_position.last + 1]
-      return downright unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first + 1, cursor.last + 1]
+      return downright unless within_board?(cursor)
 
-      return downright << current_position if board.enemy_piece?(current_position, color)
-      return downright if board.piece?(current_position)
+      return downright << cursor if board.enemy_piece?(cursor, color)
+      return downright if board.piece?(cursor)
 
-      downright << current_position
+      downright << cursor
     end
   end
 
-  def upleft_moves(board, upleft = [], current_position = @square)
+  def upleft_moves(board, upleft = [], cursor = @square)
     loop do
-      current_position = [current_position.first - 1, current_position.last - 1]
-      return upleft unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first - 1, cursor.last - 1]
+      return upleft unless within_board?(cursor)
 
-      return upleft << current_position if board.enemy_piece?(current_position, color)
-      return upleft if board.piece?(current_position)
+      return upleft << cursor if board.enemy_piece?(cursor, color)
+      return upleft if board.piece?(cursor)
 
-      upleft << current_position
+      upleft << cursor
     end
   end
 
-  def downleft_moves(board, downleft = [], current_position = @square)
+  def downleft_moves(board, downleft = [], cursor = @square)
     loop do
-      current_position = [current_position.first + 1, current_position.last - 1]
-      return downleft unless current_position.all? { |n| n.between?(0, 7) }
+      cursor = [cursor.first + 1, cursor.last - 1]
+      return downleft unless within_board?(cursor)
 
-      return downleft << current_position if board.enemy_piece?(current_position, color)
-      return downleft if board.piece?(current_position)
+      return downleft << cursor if board.enemy_piece?(cursor, color)
+      return downleft if board.piece?(cursor)
 
-      downleft << current_position
+      downleft << cursor
     end
   end
+
+  def within_board?(coordinates)
+    coordinates.all? { |n| n.between?(0, 7) }
+  end
+
 end

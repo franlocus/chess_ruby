@@ -5,7 +5,7 @@ class King < Piece
     moves_vector
       .map { |y, x| [square[0] + y, square[1] + x] }
       .select do |move|
-        move.all? { |n| n.between?(0, 7) } && (!board.piece?(move) || board.color_piece(move) != color)
+        move.all? { |n| n.between?(0, 7) } && (!board.piece?(move) || board.enemy_piece?(move, color))
       end
   end
   
