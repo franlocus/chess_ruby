@@ -12,15 +12,18 @@ class ChessGame
 
   def play_game
     loop do
-      puts "\nPlayer #{'White'.underline} please enter the piece you would like to move:"
       display_gui
       play_turn(@player_white)
+      display_gui
+      play_turn(@player_black)
+      display_gui
     end
   end
 
   private
 
   def play_turn(player)
+    puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
     selected_piece = select_piece(player)
     piece_legal_moves = legal_moves(selected_piece)
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"

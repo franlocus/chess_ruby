@@ -6,7 +6,7 @@ class Queen < Piece
   end
 
   def unicode
-    @color == "white" ? "♕ ".cyan  : "♛ ".yellow  
+    @color == "white" ? "♕ ".magenta  : "♛ ".yellow  
   end
   
 end
