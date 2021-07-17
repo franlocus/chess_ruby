@@ -18,9 +18,11 @@ class ChessGame
 
   def play_turn(player)
     selected_piece = select_piece(player)
-    piece_legal_moves = algebraic_legal_moves(selected_piece)
-    puts "The piece can move to:\n#{piece_legal_moves.green}\nNow type where the piece should move:"
-
+    piece_legal_moves = legal_moves(selected_piece)
+    puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
+    selected_move = select_move(player, piece_legal_moves)
+    move_piece!(selected_piece, selected_move)
+    raise "completed"
   end
 
   def select_piece(player)
@@ -31,13 +33,20 @@ class ChessGame
     end
   end
 
-  def move_piece
-    
+  def select_move(player, legal_moves)
+    while (selected_move = player.input_piece)
+      return selected_move if legal_moves.include?(selected_move)
+
+      puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
+    end
   end
 
-  def algebraic_legal_moves(piece_coordinates)
-    piece_moves = @board.legal_moves(piece_coordinates)
-    piece_moves.map { |move| to_algebraic(move) }.join(' ')
+  def move_piece!(from_square, to_square)
+
+  end
+
+  def legal_moves(piece_coordinates)
+    @board.legal_moves(piece_coordinates)
   end
 
   def display_board
@@ -54,18 +63,16 @@ class ChessGame
   private
 
   def to_algebraic(coordinates)
-    (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
+    if coordinates.any?(Array)
+      coordinates.map { |move| to_algebraic(move) }.join(' ')
+    else
+      (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
+    end
   end
 
   def to_coordinates(algebraic)
-    if algebraic.first.is_a? Array
-
-    else
-      algebraic = algebraic.chars
-      [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
-    end
-
-    
+    algebraic = algebraic.chars
+    [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
   end
 
   def black_square?(idx_row, idx_square)
