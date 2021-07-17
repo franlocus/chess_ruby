@@ -4,7 +4,7 @@ class Player
 
   def initialize(color)
     @color = color
-    @score = Array.new
+    @score = []
   end
 
   def input_piece

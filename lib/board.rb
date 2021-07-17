@@ -46,6 +46,10 @@ class Board
     !@squares[coordinates.first][coordinates.last].nil?
   end
 
+  def fetch_piece(coordinates)
+    @squares[coordinates.first][coordinates.last]
+  end
+
   def enemy_piece?(coordinates, caller_color)
     return false unless coordinates.all? { |n| n.between?(0, 7) }
 
@@ -61,19 +65,22 @@ class Board
     @squares[coordinates.first][coordinates.last].legal_moves(self)
   end
 
-  def move_piece!(piece, from_square, to_square)
-    @squares[to_square[0]][to_square[1]] = piece
-    @squares[from_square[0]][from_square[1]] = nil
+  
+
+  def move_piece!(from_square, to_square, piece)
+    @squares[from_square.first][from_square.last] = nil
+    @squares[to_square.first][to_square.last] = piece
   end
 
-  def capture_piece!
-    
+  def capture_piece!(from_square, to_square, piece, player)
+    @squares[from_square.first][from_square.last] = nil
+    player.score << fetch_piece(to_square).unicode
+    @squares[to_square.first][to_square.last] = piece
   end
 
   
 
-
-end
+end #endclass
 
 class NilClass
   def unicode

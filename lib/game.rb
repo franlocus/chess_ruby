@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require_relative 'board'
 require_relative 'player'
-class ChessGame
 
+class ChessGame
   def initialize
     @board = Board.new
     @player_white = Player.new('white')
@@ -11,18 +13,19 @@ class ChessGame
   def play_game
     loop do
       puts "\nPlayer #{'White'.underline} please enter the piece you would like to move:"
-      display_board
+      display_gui
       play_turn(@player_white)
     end
   end
+
+  private
 
   def play_turn(player)
     selected_piece = select_piece(player)
     piece_legal_moves = legal_moves(selected_piece)
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
     selected_move = select_move(player, piece_legal_moves)
-    move_piece!(selected_piece, selected_move)
-    raise "completed"
+    player_turn(selected_piece, selected_move, player)
   end
 
   def select_piece(player)
@@ -41,12 +44,24 @@ class ChessGame
     end
   end
 
-  def move_piece!(from_square, to_square)
-
+  def player_turn(from_square, to_square, player)
+    piece = @board.squares[from_square.first][from_square.last]
+    piece.square = to_square
+    if @board.piece?(to_square)
+      @board.capture_piece!(from_square, to_square, piece, player)
+    else
+      @board.move_piece!(from_square, to_square, piece)
+    end
   end
 
   def legal_moves(piece_coordinates)
     @board.legal_moves(piece_coordinates)
+  end
+
+  def display_gui
+    puts "  #{@player_black.score.join(' ')}".yellow
+    display_board
+    puts "  #{@player_white.score.join(' ')}".yellow
   end
 
   def display_board
@@ -60,8 +75,6 @@ class ChessGame
     print "  a b c d e f g h \n"
   end
 
-  private
-
   def to_algebraic(coordinates)
     if coordinates.any?(Array)
       coordinates.map { |move| to_algebraic(move) }.join(' ')
@@ -70,15 +83,9 @@ class ChessGame
     end
   end
 
-  def to_coordinates(algebraic)
-    algebraic = algebraic.chars
-    [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
-  end
-
   def black_square?(idx_row, idx_square)
     idx_row.even? && idx_square.even? || idx_row.odd? && idx_square.odd?
   end
-  
 end
 
 chess = ChessGame.new
