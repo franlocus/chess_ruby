@@ -70,22 +70,7 @@ class Board
     
   end
 
-  def display_board
-    @squares.each_with_index do |row, idx_row|
-      print (idx_row - 8).abs, ' '
-      row.each_with_index do |square, idx_square|
-        print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
-      end
-      print "\n"
-    end
-    print "  a b c d e f g h \n"
-  end
   
-  private
-
-  def black_square?(idx_row, idx_square)
-    idx_row.even? && idx_square.even? || idx_row.odd? && idx_square.odd?
-  end
 
 
 end

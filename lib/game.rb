@@ -1,46 +1,43 @@
 require_relative 'board'
+require_relative 'player'
 class ChessGame
 
   def initialize
     @board = Board.new
+    @player_white = Player.new('white')
+    @player_black = Player.new('black')
   end
 
   def play_game
     loop do
-      play_turn('white')
-      
+      puts "\nPlayer #{'White'.underline} please enter the piece you would like to move:"
+      display_board
+      play_turn(@player_white)
     end
   end
 
-  def play_turn(player_color)
-    display_board
-    puts "Player #{player_color.capitalize.underline} please enter the piece you would like to move:"
-    selected_piece = algebraic_input_player(player_color)
-    selected_piece_legal_moves = algebraic_legal_moves(to_coordinates(selected_piece))
-    puts "The piece can move to:\n#{selected_piece_legal_moves.join(' ')}".green
-    puts "Now type where the piece should move:"
+  def play_turn(player)
+    selected_piece = select_piece(player)
+    piece_legal_moves = algebraic_legal_moves(selected_piece)
+    puts "The piece can move to:\n#{piece_legal_moves.green}\nNow type where the piece should move:"
 
+  end
+
+  def select_piece(player)
+    while (selected_piece = player.input_piece)
+      return selected_piece unless @board.enemy_piece?(selected_piece, player.color) || !@board.piece?(selected_piece)
+
+      puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
+    end
+  end
+
+  def move_piece
+    
   end
 
   def algebraic_legal_moves(piece_coordinates)
     piece_moves = @board.legal_moves(piece_coordinates)
-    piece_moves.map { |move| to_algebraic(move) }
-  end
-
-  
-
-  def algebraic_input_player(player_color)
-    loop do
-      input = gets.chomp
-      return input if input.match?(/[a-h][1-8]/) && !@board.enemy_piece?(to_coordinates(input), player_color)
-
-      puts <<~INPUT_ERROR
-        Input error, please introduce:
-        A piece of your color (#{player_color.capitalize.reverse_color})
-        A valid algebraic notation, eg. 'a1' or 'b5'
-      INPUT_ERROR
-
-    end
+    piece_moves.map { |move| to_algebraic(move) }.join(' ')
   end
 
   def display_board
@@ -61,8 +58,14 @@ class ChessGame
   end
 
   def to_coordinates(algebraic)
-    algebraic = algebraic.chars
-    [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
+    if algebraic.first.is_a? Array
+
+    else
+      algebraic = algebraic.chars
+      [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
+    end
+
+    
   end
 
   def black_square?(idx_row, idx_square)
