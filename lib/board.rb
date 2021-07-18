@@ -7,7 +7,7 @@ require_relative 'bishop'
 require_relative 'queen'
 require_relative 'pawn'
 require_relative 'king'
-require_relative 'colorize'
+
 
 class Board
   attr_accessor :squares
@@ -66,10 +66,23 @@ class Board
   def legal_moves(coordinates)
     @squares[coordinates.first][coordinates.last].legal_moves(self)
   end
-  
+
+  def attacked_squares_by(player_color)
+    attacked_squares = []
+    @squares.each do |row|
+      row.each do |square|
+        next if square.nil? || square.color != player_color
+
+        attacked_squares += square.legal_moves(self)
+      end
+    end
+    attacked_squares
+  end
+
   def move_piece!(from_square, to_square, piece)
     @squares[from_square.first][from_square.last] = nil
     @squares[to_square.first][to_square.last] = piece
+    piece.has_moved = true
   end
 
 end #endclass
@@ -79,13 +92,3 @@ class NilClass
     "  "
   end
 end
-
-
-#board = Board.new
-
-#board.move_piece! Pawn.new([0,0], "white"), [6,0], [5,0]
-#board.display_board
-#print board.prepare_piece([7, 0])
-
-#board.move_piece! Pawn.new([0,0], "white"), [5,0], [4,0]
-#board.display_board

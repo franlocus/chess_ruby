@@ -2,12 +2,13 @@
 
 class Piece
 
-  attr_accessor :square
+  attr_accessor :square, :has_moved
   attr_reader :color
 
   def initialize(square, color)
     @square = square
     @color = color
+    @has_moved = false
   end
 
   def upward_moves(board, upward = [], cursor = @square)

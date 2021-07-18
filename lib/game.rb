@@ -2,6 +2,7 @@
 
 require_relative 'board'
 require_relative 'player'
+require_relative 'colorize'
 
 class ChessGame
   def initialize
@@ -11,8 +12,9 @@ class ChessGame
   end
 
   def play_game
+    display_board
+    #raise p @board.attacked_squares_by('white')
     loop do
-      display_board
       play_turn(@player_white)
       play_turn(@player_black)
     end
