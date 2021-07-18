@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'piece'
 require_relative 'rook'
 require_relative 'knight'

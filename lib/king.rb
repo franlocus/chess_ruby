@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class King < Piece
   
   def legal_moves(board)
