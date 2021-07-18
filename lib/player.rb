@@ -34,6 +34,16 @@ class Player
       puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
     end
   end
+
+  def promote_piece
+    puts "Pawn promotion! Please choose the new piece:\n1 - Queen\n2 - Rook\n3 - Bishop\n4 - Knight".cyan
+    loop do
+      input = gets.chomp
+      return input if input.match?(/[1-4]$/)
+
+      puts 'Input error, please introduce a valid option: 1, 2, 3, 4'.red
+    end
+  end
   
   def to_algebraic(coordinates)
     (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
@@ -45,3 +55,4 @@ class Player
   end
   
 end
+

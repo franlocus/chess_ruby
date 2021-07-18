@@ -36,8 +36,11 @@ class ChessGame
     piece = @board.fetch_piece(from_square)
     piece.square = to_square
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
-
-    @board.move_piece!(from_square, to_square, piece)
+    if piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
+      @board.promote_pawn(from_square, to_square, player.color, player.promote_piece)
+    else
+      @board.move_piece!(from_square, to_square, piece)
+    end
   end
 
   def display_score_board

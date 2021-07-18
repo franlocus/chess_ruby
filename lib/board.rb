@@ -8,7 +8,6 @@ require_relative 'queen'
 require_relative 'pawn'
 require_relative 'king'
 
-
 class Board
   attr_accessor :squares
 
@@ -29,7 +28,7 @@ class Board
                    Bishop.new([7, 5], 'white'),
                    Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
-    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
+    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'black') }
   end
 
   def setup_black
@@ -41,7 +40,7 @@ class Board
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
                    Rook.new([0, 7], 'black')]
-    @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
+    @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'white') }
   end
 
   def piece?(coordinates)
@@ -85,6 +84,15 @@ class Board
     piece.has_moved = true
   end
 
+  def promote_pawn(from_square, to_square, color, promoted_piece)
+    @squares[from_square.first][from_square.last] = nil
+    @squares[to_square.first][to_square.last] = case promoted_piece
+                                                when '1' then Queen.new(to_square, color)
+                                                when '2' then Rook.new(to_square, color)
+                                                when '3' then Bishop.new(to_square, color)
+                                                else Knight.new(to_square, color)
+                                                end
+  end
 end #endclass
 
 class NilClass
