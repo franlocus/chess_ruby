@@ -18,6 +18,22 @@ class Player
 
     end
   end
+
+  def select_piece(board)
+    while (selected_piece = input_piece)
+      return selected_piece unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
+
+      puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
+    end
+  end
+
+  def select_move(legal_moves)
+    while (selected_move = input_piece)
+      return selected_move if legal_moves.include?(selected_move)
+
+      puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
+    end
+  end
   
   def to_algebraic(coordinates)
     (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s

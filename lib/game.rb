@@ -12,11 +12,9 @@ class ChessGame
 
   def play_game
     loop do
-      display_gui
+      display_board
       play_turn(@player_white)
-      display_gui
       play_turn(@player_black)
-      display_gui
     end
   end
 
@@ -24,44 +22,23 @@ class ChessGame
 
   def play_turn(player)
     puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
-    selected_piece = select_piece(player)
-    piece_legal_moves = legal_moves(selected_piece)
+    selected_piece = player.select_piece(@board)
+    piece_legal_moves = @board.legal_moves(selected_piece)
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
-    selected_move = select_move(player, piece_legal_moves)
+    selected_move = player.select_move(piece_legal_moves)
     player_turn(selected_piece, selected_move, player)
-  end
-
-  def select_piece(player)
-    while (selected_piece = player.input_piece)
-      return selected_piece unless @board.enemy_piece?(selected_piece, player.color) || !@board.piece?(selected_piece)
-
-      puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
-    end
-  end
-
-  def select_move(player, legal_moves)
-    while (selected_move = player.input_piece)
-      return selected_move if legal_moves.include?(selected_move)
-
-      puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
-    end
+    display_score_board
   end
 
   def player_turn(from_square, to_square, player)
-    piece = @board.squares[from_square.first][from_square.last]
+    piece = @board.fetch_piece(from_square)
     piece.square = to_square
-    if @board.piece?(to_square)
-      @board.capture_piece!(from_square, to_square, piece, player)
-    else
-      @board.move_piece!(from_square, to_square, piece)
-    end
+    player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
+
+    @board.move_piece!(from_square, to_square, piece)
   end
 
-  def legal_moves(piece_coordinates)
-    @board.legal_moves(piece_coordinates)
-  end
-
-  def display_gui
+  def display_score_board
     puts "  #{@player_black.score.join(' ')}".yellow
     display_board
     puts "  #{@player_white.score.join(' ')}".yellow

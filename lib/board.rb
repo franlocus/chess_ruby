@@ -66,21 +66,11 @@ class Board
   def legal_moves(coordinates)
     @squares[coordinates.first][coordinates.last].legal_moves(self)
   end
-
   
-
   def move_piece!(from_square, to_square, piece)
     @squares[from_square.first][from_square.last] = nil
     @squares[to_square.first][to_square.last] = piece
   end
-
-  def capture_piece!(from_square, to_square, piece, player)
-    @squares[from_square.first][from_square.last] = nil
-    player.score << fetch_piece(to_square).unicode
-    @squares[to_square.first][to_square.last] = piece
-  end
-
-  
 
 end #endclass
 
