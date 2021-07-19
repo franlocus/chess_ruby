@@ -20,11 +20,12 @@ class Board
   end
 
   def setup_white
+    @white_king = King.new([7, 4], 'white')
     @squares[7] = [Rook.new([7, 0], 'white'),
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
                    Queen.new([7, 3], 'white'),
-                   King.new([7, 4], 'white'),
+                   @white_king,
                    Bishop.new([7, 5], 'white'),
                    Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
@@ -32,11 +33,12 @@ class Board
   end
 
   def setup_black
+    @black_king = King.new([0, 4], 'black')
     @squares[0] = [nil,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
                    Queen.new([0, 3], 'black'),
-                   King.new([0, 4], 'black'),
+                   @black_king,
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
                    Rook.new([0, 7], 'black')]
@@ -55,11 +57,7 @@ class Board
     return false unless coordinates.all? { |n| n.between?(0, 7) }
 
     square_to_check = @squares[coordinates.first][coordinates.last]
-    if square_to_check.nil?
-      false
-    else
-      square_to_check.color != caller_color
-    end
+    square_to_check.nil? ? false : square_to_check.color != caller_color
   end
 
   def legal_moves(coordinates)
@@ -92,6 +90,11 @@ class Board
                                                 when '3' then Bishop.new(to_square, color)
                                                 else Knight.new(to_square, color)
                                                 end
+  end
+
+  def under_check?(player_color)
+    attacked_squares = attacked_squares_by(player_color == 'white' ? 'black' : 'white')
+    attacked_squares.include?(player_color == 'white' ? @white_king.square : @black_king.square)
   end
 end #endclass
 

@@ -13,10 +13,11 @@ class ChessGame
 
   def play_game
     display_board
-    #raise p @board.attacked_squares_by('white')
+    
     loop do
       play_turn(@player_white)
       play_turn(@player_black)
+      #raise p @board.under_check?('black')
     end
   end
 
