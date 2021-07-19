@@ -28,11 +28,11 @@ class ChessGame
     piece_legal_moves = @board.legal_moves(selected_piece)
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
     selected_move = player.select_move(piece_legal_moves)
-    player_turn(selected_piece, selected_move, player)
+    make_move(selected_piece, selected_move, player)
     display_score_board
   end
 
-  def player_turn(from_square, to_square, player)
+  def make_move(from_square, to_square, player)
     piece = @board.fetch_piece(from_square)
     piece.square = to_square
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
@@ -44,9 +44,9 @@ class ChessGame
   end
 
   def display_score_board
-    puts "  #{@player_black.score.join(' ')}".yellow
+    puts "  #{@player_black.score.join(' ')}"
     display_board
-    puts "  #{@player_white.score.join(' ')}".yellow
+    puts "  #{@player_white.score.join(' ')}"
   end
 
   def display_board
