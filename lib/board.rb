@@ -9,12 +9,12 @@ require_relative 'pawn'
 require_relative 'king'
 
 class Board
-  attr_accessor :squares
+  attr_accessor :squares, :white_king, :black_king
 
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
-    setup_white
+    #setup_white
     @squares[5][5] = Queen.new([5, 5], 'black')
     @squares[2][2] = Queen.new([2, 2], 'white')
   end
@@ -95,6 +95,22 @@ class Board
   def under_check?(player_color)
     attacked_squares = attacked_squares_by(player_color == 'white' ? 'black' : 'white')
     attacked_squares.include?(player_color == 'white' ? @white_king.square : @black_king.square)
+  end
+  
+  def fetch_checker(king)
+    checker = []
+    @squares.each do |row|
+      row.each do |square|
+        next if square.nil? || !square.legal_moves(self).include?(king.square)
+
+        checker << square
+      end
+    end
+    checker
+  end
+
+  def intercept_attack
+    
   end
 end #endclass
 

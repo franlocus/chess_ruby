@@ -15,9 +15,11 @@ class ChessGame
     display_board
     
     loop do
+      p @board.attacked_squares_by('white')
       play_turn(@player_white)
+      raise p @board.fetch_checker(@board.black_king)
       play_turn(@player_black)
-      #raise p @board.under_check?('black')
+      
     end
   end
 
