@@ -14,9 +14,9 @@ class Board
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
-    #setup_white
+    setup_white
     @squares[5][6] = Queen.new([5, 6], 'white')
-    @squares[2][2] = Queen.new([2, 2], 'white')
+    @squares[2][2] = King.new([2, 2], 'white')
     @squares[1][3] = Knight.new([1, 3], 'white')
   end
 
@@ -30,7 +30,7 @@ class Board
                    Bishop.new([7, 5], 'white'),
                    Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
-    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'black') }
+    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_black
@@ -43,7 +43,7 @@ class Board
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
                    Rook.new([0, 7], 'black')]
-    #@squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'white') }
+    #@squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
   end
 
   def piece?(coordinates)
@@ -69,9 +69,9 @@ class Board
     attacked_squares = []
     @squares.each do |row|
       row.each do |square|
-        next if square.nil? || square.color != player_color
+        next if square.nil? || square.color != player_color 
 
-        attacked_squares += square.legal_moves(self, true)
+        attacked_squares += square.is_a?(King) ? square.bordering_squares : square.legal_moves(self, true)
       end
     end
     attacked_squares

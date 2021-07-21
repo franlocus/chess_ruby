@@ -15,9 +15,9 @@ class ChessGame
     display_board
     
     loop do
-      p @board.defended_squares_by('white')
+      #p @board.defended_squares_by('white')
       play_turn(@player_white)
-      p @board.check_intercepters(@board.fetch_checker(@board.black_king), @board.black_king)
+      #p @board.check_intercepters(@board.fetch_checker(@board.black_king), @board.black_king)
       play_turn(@player_black)
       
     end
@@ -66,6 +66,8 @@ class ChessGame
   def to_algebraic(coordinates)
     if coordinates.any?(Array)
       coordinates.map { |move| to_algebraic(move) }.join(' ')
+    elsif coordinates.empty?
+      "No moves available"
     else
       (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
     end
