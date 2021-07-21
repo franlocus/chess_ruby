@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class Player
-  attr_accessor :score
+  attr_accessor :score, :king
   attr_reader :color
 
-  def initialize(color)
+  def initialize(color, king)
     @color = color
+    @king = king
     @score = []
   end
 

@@ -114,7 +114,25 @@ class Board
     "DOUBLE CHECK"
   end
 
-  def check_intercepters(checker, king)
+  # move king, attack attacker, intercept attacker)
+  def forced_pieces(king)
+    checker = fetch_checker(king)
+    defenders(checker, king) + intercepters(checker, king) << king.square
+  end
+
+  def defenders(checker, king)
+    defenders = []
+    @squares.each do |row|
+      row.each do |square|
+        next if square.nil? || square.color != king.color
+
+        defenders << square.square if square.legal_moves(self).include?(checker.square) 
+      end
+    end
+    defenders
+  end
+
+  def intercepters(checker, king)
     intercepter = []
     fire_line = search_fireline(checker, king.square)
     @squares.each do |row|

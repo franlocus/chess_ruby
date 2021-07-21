@@ -7,8 +7,8 @@ require_relative 'colorize'
 class ChessGame
   def initialize
     @board = Board.new
-    @player_white = Player.new('white')
-    @player_black = Player.new('black')
+    @player_white = Player.new('white', @board.white_king)
+    @player_black = Player.new('black', @board.black_king)
   end
 
   def play_game
@@ -27,6 +27,30 @@ class ChessGame
   private
 
   def play_turn(player)
+    if @board.under_check?(player.color)
+      puts "\nCHECK! Player #{player.color.underline} please enter the forced piece you would like to move:".cyan
+      forced_turn(player)
+    else
+      normal_turn(player)
+    end
+  end
+
+  def forced_turn(player)
+    forced_pieces = @board.forced_pieces(player.king)
+    puts  "You can only move: #{to_algebraic(forced_pieces)}"
+    while (selected_piece = player.select_piece(@board))
+      piece_legal_moves = @board.legal_moves(selected_piece)
+      break unless piece_legal_moves.empty?
+
+      puts 'Sorry, no moves available for that piece, choose another one.'.red
+    end 
+    puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
+    selected_move = player.select_move(piece_legal_moves)
+    make_move(selected_piece, selected_move, player)
+    display_score_board
+  end
+
+  def normal_turn(player)
     puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
     while (selected_piece = player.select_piece(@board))
       piece_legal_moves = @board.legal_moves(selected_piece)
