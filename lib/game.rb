@@ -15,9 +15,9 @@ class ChessGame
     display_board
     
     loop do
-      p @board.attacked_squares_by('white')
+      p @board.defended_squares_by('white')
       play_turn(@player_white)
-      raise p @board.fetch_checker(@board.black_king)
+      p @board.check_intercepters(@board.fetch_checker(@board.black_king), @board.black_king)
       play_turn(@player_black)
       
     end

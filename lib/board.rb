@@ -15,8 +15,9 @@ class Board
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
     #setup_white
-    @squares[5][5] = Queen.new([5, 5], 'black')
+    @squares[5][6] = Queen.new([5, 6], 'white')
     @squares[2][2] = Queen.new([2, 2], 'white')
+    @squares[1][3] = Knight.new([1, 3], 'white')
   end
 
   def setup_white
@@ -42,7 +43,7 @@ class Board
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
                    Rook.new([0, 7], 'black')]
-    @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'white') }
+    #@squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'white') }
   end
 
   def piece?(coordinates)
@@ -64,13 +65,13 @@ class Board
     @squares[coordinates.first][coordinates.last].legal_moves(self)
   end
 
-  def attacked_squares_by(player_color)
+  def defended_squares_by(player_color)
     attacked_squares = []
     @squares.each do |row|
       row.each do |square|
         next if square.nil? || square.color != player_color
 
-        attacked_squares += square.legal_moves(self)
+        attacked_squares += square.legal_moves(self, true)
       end
     end
     attacked_squares
@@ -93,10 +94,10 @@ class Board
   end
 
   def under_check?(player_color)
-    attacked_squares = attacked_squares_by(player_color == 'white' ? 'black' : 'white')
+    attacked_squares = defended_squares_by(player_color == 'white' ? 'black' : 'white')
     attacked_squares.include?(player_color == 'white' ? @white_king.square : @black_king.square)
   end
-  
+
   def fetch_checker(king)
     checker = []
     @squares.each do |row|
@@ -106,11 +107,30 @@ class Board
         checker << square
       end
     end
-    checker
+    checker.size == 1 ? checker.first : double_check
   end
 
-  def intercept_attack
-    
+  def double_check
+    "DOUBLE CHECK"
+  end
+
+  def check_intercepters(checker, king)
+    intercepter = []
+    fire_line = search_fireline(checker, king.square)
+    @squares.each do |row|
+      row.each do |square|
+        next if square.nil? || square.color != king.color
+
+        intercepter << square unless (square.legal_moves(self) & fire_line).empty?
+      end
+    end
+    intercepter
+  end
+
+  def search_fireline(checker, king_square)
+    return [] if %w[Pawn Knight King].include?(checker.class.to_s)
+
+    checker.legal_moves(self, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
   end
 end #endclass
 
