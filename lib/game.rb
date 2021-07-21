@@ -17,6 +17,7 @@ class ChessGame
     loop do
       #p @board.defended_squares_by('white')
       play_turn(@player_white)
+      
       #p @board.check_intercepters(@board.fetch_checker(@board.black_king), @board.black_king)
       play_turn(@player_black)
       
@@ -27,8 +28,12 @@ class ChessGame
 
   def play_turn(player)
     puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
-    selected_piece = player.select_piece(@board)
-    piece_legal_moves = @board.legal_moves(selected_piece)
+    while (selected_piece = player.select_piece(@board))
+      piece_legal_moves = @board.legal_moves(selected_piece)
+      break unless piece_legal_moves.empty?
+
+      puts 'Sorry, no moves available for that piece, choose another one.'.red
+    end 
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
     selected_move = player.select_move(piece_legal_moves)
     make_move(selected_piece, selected_move, player)
@@ -66,8 +71,6 @@ class ChessGame
   def to_algebraic(coordinates)
     if coordinates.any?(Array)
       coordinates.map { |move| to_algebraic(move) }.join(' ')
-    elsif coordinates.empty?
-      "No moves available"
     else
       (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
     end
