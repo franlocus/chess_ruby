@@ -19,7 +19,14 @@ class Player
     end
   end
 
-  def select_piece(board)
+  def select_piece(board, forced_pieces = nil)
+    unless forced_pieces.nil?
+      while (selected_piece = input_piece)
+        return selected_piece if forced_pieces.include?(selected_piece)
+
+        puts "Input error: #{''.underline}.\nDon't worry, try again!".red
+      end
+    end
     while (selected_piece = input_piece)
       return selected_piece unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
 
@@ -29,7 +36,7 @@ class Player
 
   def select_move(legal_moves)
     while (selected_move = input_piece)
-      return selected_move if legal_moves.include?(selected_move)
+      return selected_move if legal_moves.include?(selected_move) || [legal_moves].include?(selected_move)
 
       puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
     end

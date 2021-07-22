@@ -16,7 +16,7 @@ class Board
     setup_black
     setup_white
     @squares[5][6] = Queen.new([5, 6], 'white')
-    @squares[2][2] = King.new([2, 2], 'white')
+    @squares[3][2] = Queen.new([3, 2], 'white')
     @squares[1][3] = Knight.new([1, 3], 'white')
   end
 
@@ -117,29 +117,34 @@ class Board
   # move king, attack attacker, intercept attacker)
   def forced_pieces(king)
     checker = fetch_checker(king)
-    defenders(checker, king) + intercepters(checker, king) << king.square
+    defenders = defenders(checker, king)
+    intercepters = intercepters(checker, king)
+    pieces = defenders.merge(intercepters)
+    pieces[king.square] = king.legal_moves(self)
+    pieces
   end
 
   def defenders(checker, king)
-    defenders = []
+    defenders = {}
     @squares.each do |row|
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        defenders << square.square if square.legal_moves(self).include?(checker.square) 
+        defenders[square.square] = checker.square if square.legal_moves(self).include?(checker.square)
       end
     end
     defenders
   end
 
-  def intercepters(checker, king)
-    intercepter = []
+  def intercepters(checker, king, intercepter = {})
     fire_line = search_fireline(checker, king.square)
     @squares.each do |row|
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        intercepter << square unless (square.legal_moves(self) & fire_line).empty?
+        unless (square.legal_moves(self) & fire_line).empty?
+          intercepter[square.square] = (square.legal_moves(self) & fire_line)
+        end
       end
     end
     intercepter

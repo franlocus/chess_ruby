@@ -28,7 +28,7 @@ class ChessGame
 
   def play_turn(player)
     if @board.under_check?(player.color)
-      puts "\nCHECK! Player #{player.color.underline} please enter the forced piece you would like to move:".cyan
+      puts "\nCHECK!\nPlayer #{player.color.underline} please enter the forced piece you would like to move:".cyan
       forced_turn(player)
     else
       normal_turn(player)
@@ -37,13 +37,9 @@ class ChessGame
 
   def forced_turn(player)
     forced_pieces = @board.forced_pieces(player.king)
-    puts  "You can only move: #{to_algebraic(forced_pieces)}"
-    while (selected_piece = player.select_piece(@board))
-      piece_legal_moves = @board.legal_moves(selected_piece)
-      break unless piece_legal_moves.empty?
-
-      puts 'Sorry, no moves available for that piece, choose another one.'.red
-    end 
+    puts "You can only move: #{to_algebraic(forced_pieces.keys)}"
+    selected_piece = player.select_piece(@board, forced_pieces)
+    piece_legal_moves = forced_pieces[selected_piece]
     puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
     selected_move = player.select_move(piece_legal_moves)
     make_move(selected_piece, selected_move, player)
