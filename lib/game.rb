@@ -49,7 +49,14 @@ class ChessGame
   def normal_turn(player)
     puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
     while (selected_piece = player.select_piece(@board))
-      piece_legal_moves = @board.legal_moves(selected_piece)
+      puts "debug"
+      piece = @board.fetch_piece(selected_piece)
+      piece_legal_moves = 
+      if @board.under_pin?(piece, player.king)
+        @board.pinned_fireline(piece, player.king) & @board.legal_moves(selected_piece)
+      else
+        @board.legal_moves(selected_piece)
+      end
       break unless piece_legal_moves.empty?
 
       puts 'Sorry, no moves available for that piece, choose another one.'.red
