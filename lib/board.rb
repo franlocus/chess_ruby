@@ -115,11 +115,16 @@ class Board
   end
 
   # move king, attack attacker, intercept attacker)
+
   def forced_pieces(king)
     checker = fetch_checker(king)
     defenders = defenders(checker, king)
     intercepters = intercepters(checker, king)
-    pieces = defenders.merge(intercepters)
+    pieces = defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
+      defender_val = [defender_val] unless defender_val.any?(Array)
+      intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
+      defender_val + intercepter_val
+    end
     pieces[king.square] = king.legal_moves(self)
     pieces
   end
