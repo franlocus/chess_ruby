@@ -8,8 +8,11 @@ class Board
     setup_black
     setup_whitex
     #@squares[1][0] = Pawn.new([1, 0], 'white')
-    @squares[5][1] = Queen.new([5, 1], 'black')
-    @squares[7][6] = Knight.new([7, 6], 'black')
+    @squares[5][2] = Queen.new([5, 2], 'black')
+    @squares[7][6] = Rook.new([7, 6], 'black')
+    @squares[7][3] = Queen.new([7, 3], 'white')
+    #@squares[6][1] = Knight.new([6, 1], 'white')
+   
   end
 
   def setup_whitex
@@ -17,8 +20,8 @@ class Board
     @squares[7] = [@white_king,
                    nil,
                    nil,
-                  # Queen.new([7, 3], 'white'),
-                  nil,
+                   nil,
+                 
                    nil,
                    nil,
                    nil,
@@ -126,8 +129,11 @@ class Board
       intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
       defender_val + intercepter_val
     end
-    #pieces[king.square] = king.legal_moves(self)
+    pieces[king.square] = king.legal_moves(self)
+    p pieces 
     pieces
+    #p under_pin?(fetch_piece([7, 3]), king)
+    #pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king) }
   end
 
   def defenders(checker, king)
@@ -136,7 +142,7 @@ class Board
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        defenders[square.square] = checker.square if square.legal_moves(self).include?(checker.square)
+        defenders[square.square] = checker.square if square.legal_moves(self).include?(checker.square) && !under_pin?(square ,king)
       end
     end
     defenders
@@ -148,7 +154,7 @@ class Board
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        unless (square.legal_moves(self) & fire_line).empty?
+        unless (square.legal_moves(self) & fire_line).empty? || under_pin?(square, king)
           intercepter[square.square] = (square.legal_moves(self) & fire_line)
         end
       end
@@ -161,6 +167,21 @@ class Board
 
     checker.legal_moves(self, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
   end
+=begin
+  def under_pin?(piece, king)
+    return false if piece.is_a?(King)
+    
+    piece.all_moves(self, true, 'Hash').each_value do |value|
+      #value.each do |square|
+        #fetched_pieces = []
+        #square.nil? ? next : fetched_pieces << fetch_piece(square).class.to_s
+      #end
+      #fetched_pieces.include?(king) && fetched_pieces.include?(piece) && fetched_pieces.include?()
+      puts value.map { |move| fetch_piece(move).unicode unless fetch_piece(move).nil? }.join
+    end
+    false
+  end
+=end
 
   def under_pin?(piece, king)
     return false if piece.is_a?(King)
@@ -168,6 +189,10 @@ class Board
     board = clone
     board.squares = board.squares.map { |row| row.map { |square| square == piece ? nil : square } }
     fetch_checker(king, board).nil? ? false : true
+    #simulated_checker = fetch_checker(king, board)
+    #true_checker = fetch_checker(king)
+    #simulated_checker != true_checker
+
   end
 
   def fetch_pinner(piece, king)
@@ -178,14 +203,12 @@ class Board
 
   def pinned_fireline(piece, king)
     pinner = fetch_pinner(piece, king)
-    pinned_moves = []
-    pinner.legal_moves(self, false, 'Hash').each_value do |value|
-      if value.include?(piece.square)
-        pinned_moves += value
-        pinned_moves.delete(piece.square)
-      end
-    end
-    pinned_moves << pinner.square
+    moves = []
+    pinner.legal_moves(self, false, 'Hash').each_value { |value| moves += value if value.include?(piece.square) }
+    piece.legal_moves(self, true, 'Hash').each_value { |value| moves += value if value.include?(king.square) }
+    moves.delete(piece.square)
+    moves.delete(king.square)
+    moves << pinner.square
   end
 end #endclass
 

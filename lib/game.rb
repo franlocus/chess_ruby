@@ -30,20 +30,18 @@ class ChessGame
   def play_turn(player, color = player.color)
     display_score_board
     if @board.under_check?(color)
-      if @board.forced_pieces(player.king).empty?
+      unless can_move?(player)
         abort "#{color == 'white' ? 'BLACK' : 'WHITE'} WINS by CHECK MATE\nGame over\n".reverse_color
-      else
-        puts "\nCHECK!\nPlayer #{color.underline} please enter the forced piece you would like to move:".cyan
-      forced_turn(player)
       end
+      forced_turn(player)
     else
-      p 
-      puts "\nPlayer #{color.underline} please enter the piece you would like to move:"
+      abort "DRAW by STALE MATE\nGame over\n".reverse_color unless can_move?(player)
       normal_turn(player)
     end
   end
 
   def forced_turn(player)
+    puts "\nCHECK!\nPlayer #{player.color.underline} please enter the forced piece you would like to move:".cyan
     forced_pieces = @board.forced_pieces(player.king)
     selected_piece = player.select_piece(@board, forced_pieces.keys)
     piece_legal_moves = forced_pieces[selected_piece]
@@ -51,7 +49,20 @@ class ChessGame
     make_move(selected_piece, selected_move, player)
   end
 
+  def can_move?(player)
+    total_moves = 0
+    @board.squares.each do |row|
+      row.each do |square|
+        next if square.nil? || square.color != player.color
+
+        total_moves += 1 unless @board.legal_moves(square.square, player).empty?
+      end
+    end
+    !total_moves.zero?
+  end
+
   def normal_turn(player)
+    puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
     while (selected_piece = player.select_piece(@board))
       piece_legal_moves = @board.legal_moves(selected_piece, player)
       break unless piece_legal_moves.empty?

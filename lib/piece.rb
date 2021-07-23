@@ -109,4 +109,26 @@ class Piece
   def within_board?(coordinates)
     coordinates.all? { |n| n.between?(0, 7) }
   end
+  
+=begin 
+    def all_moves(board, defence_move = false, output_format = 'Array')
+      moves = { 'upright_moves' => upright_moves(board, defence_move),
+                'downright_moves' => downright_moves(board, defence_move),
+                'downleft_moves' => downleft_moves(board, defence_move),
+                'upleft_moves' => upleft_moves(board, defence_move),
+                'upward_moves' => upward_moves(board, defence_move),
+                'rightward_moves' => rightward_moves(board, defence_move),
+                'downward_moves' => downward_moves(board, defence_move),
+                'leftward_moves' => leftward_moves(board, defence_move) }
+      output_format == 'Hash' ? moves : moves.values.flatten(1)
+    end 
+=end
+
+  def all_moves(board, defence_move = false, output_format = 'Array')
+    moves = { 'diagonal_upward_moves' => downleft_moves(board, defence_move) + upright_moves(board, defence_move),
+              'diagonal_downward_moves' => upleft_moves(board, defence_move) + downright_moves(board, defence_move),
+              'column_moves' => upward_moves(board, defence_move) + downward_moves(board, defence_move),
+              'row_moves' => leftward_moves(board, defence_move) + rightward_moves(board, defence_move) }
+    output_format == 'Hash' ? moves : moves.values.flatten(1)
+  end
 end
