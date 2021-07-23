@@ -6,10 +6,26 @@ class Board
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
-    setup_white
-    @squares[1][0] = Pawn.new([1, 0], 'white')
-    @squares[3][4] = Queen.new([3, 4], 'white')
-    @squares[1][4] = Knight.new([1, 4], 'black')
+    setup_whitex
+    #@squares[1][0] = Pawn.new([1, 0], 'white')
+    @squares[5][1] = Queen.new([5, 1], 'black')
+    @squares[7][6] = Knight.new([7, 6], 'black')
+  end
+
+  def setup_whitex
+    @white_king = King.new([7, 0], 'white')
+    @squares[7] = [@white_king,
+                   nil,
+                   nil,
+                  # Queen.new([7, 3], 'white'),
+                  nil,
+                   nil,
+                   nil,
+                   nil,
+                   #Bishop.new([7, 5], 'white'),
+                   #Knight.new([7, 6], 'white'),
+                   nil]
+    #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_white
@@ -17,12 +33,15 @@ class Board
     @squares[7] = [Rook.new([7, 0], 'white'),
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
-                   Queen.new([7, 3], 'white'),
+                  # Queen.new([7, 3], 'white'),
+                  nil,
                    @white_king,
-                   Bishop.new([7, 5], 'white'),
-                   Knight.new([7, 6], 'white'),
+                   nil,
+                   nil,
+                   #Bishop.new([7, 5], 'white'),
+                   #Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
-    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
+    #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_black
@@ -107,7 +126,7 @@ class Board
       intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
       defender_val + intercepter_val
     end
-    pieces[king.square] = king.legal_moves(self)
+    #pieces[king.square] = king.legal_moves(self)
     pieces
   end
 

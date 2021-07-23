@@ -27,13 +27,18 @@ class ChessGame
 
   private
 
-  def play_turn(player)
+  def play_turn(player, color = player.color)
     display_score_board
-    if @board.under_check?(player.color)
-      puts "\nCHECK!\nPlayer #{player.color.underline} please enter the forced piece you would like to move:".cyan
+    if @board.under_check?(color)
+      if @board.forced_pieces(player.king).empty?
+        abort "#{color == 'white' ? 'BLACK' : 'WHITE'} WINS by CHECK MATE\nGame over\n".reverse_color
+      else
+        puts "\nCHECK!\nPlayer #{color.underline} please enter the forced piece you would like to move:".cyan
       forced_turn(player)
+      end
     else
-      puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
+      p 
+      puts "\nPlayer #{color.underline} please enter the piece you would like to move:"
       normal_turn(player)
     end
   end
