@@ -11,6 +11,7 @@ class Player
   end
 
   def input_piece
+    
     loop do
       input = gets.chomp
       return to_coordinates(input) if input.match?(/[a-h][1-8]$/)
@@ -21,6 +22,7 @@ class Player
 
   def select_piece(board, forced_pieces = nil)
     unless forced_pieces.nil?
+      puts "You can only move: #{to_algebraic(forced_pieces)}"
       while (selected_piece = input_piece)
         return selected_piece if forced_pieces.include?(selected_piece)
 
@@ -35,6 +37,7 @@ class Player
   end
 
   def select_move(legal_moves)
+    puts "The piece can move to:\n#{to_algebraic(legal_moves).green}\nNow type where the piece should move:"
     while (selected_move = input_piece)
       return selected_move if legal_moves.include?(selected_move) || [legal_moves].include?(selected_move)
 
@@ -43,12 +46,20 @@ class Player
   end
 
   def promote_piece
-    puts "Pawn promotion! Please choose the new piece:\n1 - Queen\n2 - Rook\n3 - Bishop\n4 - Knight".cyan
+    puts "Pawn promotion! Please choose the new piece:\n[1] - Queen\n[2] - Rook\n[3] - Bishop\n[4] - Knight".cyan
     loop do
       input = gets.chomp
       return input if input.match?(/[1-4]$/)
 
       puts 'Input error, please introduce a valid option: 1, 2, 3, 4'.red
+    end
+  end
+
+  def to_algebraic(coordinates)
+    if coordinates.any?(Array)
+      coordinates.map { |move| to_algebraic(move) }.join(' ')
+    else
+      (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
     end
   end
 

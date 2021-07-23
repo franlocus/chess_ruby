@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'piece'
-require_relative 'rook'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'queen'
-require_relative 'pawn'
-require_relative 'king'
-
 class Board
   attr_accessor :squares, :white_king, :black_king
 
@@ -15,7 +7,7 @@ class Board
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
     setup_white
-    #@squares[5][6] = Queen.new([5, 6], 'white')
+    @squares[1][0] = Pawn.new([1, 0], 'white')
     @squares[3][4] = Queen.new([3, 4], 'white')
     @squares[1][4] = Knight.new([1, 4], 'black')
   end
@@ -61,36 +53,31 @@ class Board
     square_to_check.nil? ? false : square_to_check.color != caller_color
   end
 
-  def legal_moves(coordinates)
-    @squares[coordinates.first][coordinates.last].legal_moves(self)
+  def legal_moves(coordinates, player)
+    piece = fetch_piece(coordinates)
+    if under_pin?(piece, player.king)
+      pinned_fireline(piece, player.king) & piece.legal_moves(self)
+    else
+      piece.legal_moves(self)
+    end
   end
 
   def defended_squares_by(player_color)
-    attacked_squares = []
+    defended = []
     @squares.each do |row|
       row.each do |square|
         next if square.nil? || square.color != player_color 
 
-        attacked_squares += square.is_a?(King) ? square.bordering_squares : square.legal_moves(self, true)
+        defended += square.is_a?(King) ? square.bordering_squares : square.legal_moves(self, true)
       end
     end
-    attacked_squares
+    defended
   end
 
   def move_piece!(from_square, to_square, piece)
     @squares[from_square.first][from_square.last] = nil
     @squares[to_square.first][to_square.last] = piece
     piece.has_moved = true
-  end
-
-  def promote_pawn(from_square, to_square, color, promoted_piece)
-    @squares[from_square.first][from_square.last] = nil
-    @squares[to_square.first][to_square.last] = case promoted_piece
-                                                when '1' then Queen.new(to_square, color)
-                                                when '2' then Rook.new(to_square, color)
-                                                when '3' then Bishop.new(to_square, color)
-                                                else Knight.new(to_square, color)
-                                                end
   end
 
   def under_check?(player_color)
@@ -107,10 +94,6 @@ class Board
       end
     end
     nil
-  end
-
-  def double_check
-    "DOUBLE CHECK"
   end
 
   # move king, attack attacker, intercept attacker)

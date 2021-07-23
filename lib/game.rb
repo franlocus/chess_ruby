@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require_relative 'piece'
+require_relative 'rook'
+require_relative 'knight'
+require_relative 'bishop'
+require_relative 'queen'
+require_relative 'pawn'
+require_relative 'king'
 require_relative 'board'
 require_relative 'player'
 require_relative 'colorize'
@@ -12,59 +19,42 @@ class ChessGame
   end
 
   def play_game
-    display_board
-    
     loop do
-      #p @board.defended_squares_by('white')
       play_turn(@player_white)
-      
-      #p @board.check_intercepters(@board.fetch_checker(@board.black_king), @board.black_king)
       play_turn(@player_black)
-      
     end
   end
 
   private
 
   def play_turn(player)
+    display_score_board
     if @board.under_check?(player.color)
       puts "\nCHECK!\nPlayer #{player.color.underline} please enter the forced piece you would like to move:".cyan
       forced_turn(player)
     else
+      puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
       normal_turn(player)
     end
   end
 
   def forced_turn(player)
     forced_pieces = @board.forced_pieces(player.king)
-    puts "You can only move: #{to_algebraic(forced_pieces.keys)}"
-    selected_piece = player.select_piece(@board, forced_pieces)
+    selected_piece = player.select_piece(@board, forced_pieces.keys)
     piece_legal_moves = forced_pieces[selected_piece]
-    puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
     selected_move = player.select_move(piece_legal_moves)
     make_move(selected_piece, selected_move, player)
-    display_score_board
   end
 
   def normal_turn(player)
-    puts "\nPlayer #{player.color.underline} please enter the piece you would like to move:"
     while (selected_piece = player.select_piece(@board))
-      puts "debug"
-      piece = @board.fetch_piece(selected_piece)
-      piece_legal_moves = 
-      if @board.under_pin?(piece, player.king)
-        @board.pinned_fireline(piece, player.king) & @board.legal_moves(selected_piece)
-      else
-        @board.legal_moves(selected_piece)
-      end
+      piece_legal_moves = @board.legal_moves(selected_piece, player)
       break unless piece_legal_moves.empty?
 
       puts 'Sorry, no moves available for that piece, choose another one.'.red
-    end 
-    puts "The piece can move to:\n#{to_algebraic(piece_legal_moves).green}\nNow type where the piece should move:"
+    end
     selected_move = player.select_move(piece_legal_moves)
     make_move(selected_piece, selected_move, player)
-    display_score_board
   end
 
   def make_move(from_square, to_square, player)
@@ -72,10 +62,20 @@ class ChessGame
     piece.square = to_square
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
     if piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
-      @board.promote_pawn(from_square, to_square, player.color, player.promote_piece)
+      promote_pawn(from_square, to_square, player)
     else
       @board.move_piece!(from_square, to_square, piece)
     end
+  end
+
+  def promote_pawn(from_square, to_square, player, color = player.color)
+    @board.squares[from_square.first][from_square.last] = nil
+    @board.squares[to_square.first][to_square.last] = case player.promote_piece
+                                                      when '1' then Queen.new(to_square, color)
+                                                      when '2' then Rook.new(to_square, color)
+                                                      when '3' then Bishop.new(to_square, color)
+                                                      else Knight.new(to_square, color)
+                                                      end
   end
 
   def display_score_board
@@ -93,14 +93,6 @@ class ChessGame
       print "\n"
     end
     print "  a b c d e f g h \n"
-  end
-
-  def to_algebraic(coordinates)
-    if coordinates.any?(Array)
-      coordinates.map { |move| to_algebraic(move) }.join(' ')
-    else
-      (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
-    end
   end
 
   def black_square?(idx_row, idx_square)
