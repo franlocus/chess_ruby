@@ -8,22 +8,24 @@ class Board
     setup_black
     setup_whitex
     #@squares[1][0] = Pawn.new([1, 0], 'white')
-    @squares[5][2] = Queen.new([5, 2], 'black')
-    @squares[7][6] = Rook.new([7, 6], 'black')
+    #@squares[5][2] = Queen.new([5, 2], 'black')
+    @squares[6][6] = Rook.new([6, 6], 'black')
     @squares[7][3] = Queen.new([7, 3], 'white')
     #@squares[6][1] = Knight.new([6, 1], 'white')
    
   end
 
   def setup_whitex
-    @white_king = King.new([7, 0], 'white')
-    @squares[7] = [@white_king,
+    @white_king = King.new([6, 4], 'white')
+    @squares[6] = [nil,
                    nil,
+        
+                   
                    nil,
+                   
                    nil,
-                 
-                   nil,
-                   nil,
+                   @white_king,
+                   Knight.new([6, 5], 'white'),
                    nil,
                    #Bishop.new([7, 5], 'white'),
                    #Knight.new([7, 6], 'white'),
@@ -52,7 +54,8 @@ class Board
     @squares[0] = [nil,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
-                   Queen.new([0, 3], 'black'),
+                   #Queen.new([0, 3], 'black'),
+                   nil,
                    @black_king,
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
@@ -75,9 +78,11 @@ class Board
     square_to_check.nil? ? false : square_to_check.color != caller_color
   end
 
-  def legal_moves(coordinates, player)
+  def legal_moves(coordinates, player, checker = nil)
     piece = fetch_piece(coordinates)
-    if under_pin?(piece, player.king)
+    if under_pin?(piece, player.king, checker)
+      return [] if piece.is_a?(Knight)
+
       pinned_fireline(piece, player.king) & piece.legal_moves(self)
     else
       piece.legal_moves(self)
@@ -107,21 +112,18 @@ class Board
     attacked_squares.include?(player_color == 'white' ? @white_king.square : @black_king.square)
   end
 
-  def fetch_checker(king, board = self)
+  def fetch_checker(king, board = self, checker = false)
     board.squares.each do |row|
       row.each do |square|
         next if square.nil? || !square.legal_moves(board).include?(king.square)
 
-        return square
+        return square unless square == checker
       end
     end
     nil
   end
 
-  # move king, attack attacker, intercept attacker)
-
-  def forced_pieces(king)
-    checker = fetch_checker(king)
+  def forced_pieces(king, checker)
     defenders = defenders(checker, king)
     intercepters = intercepters(checker, king)
     pieces = defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
@@ -129,12 +131,10 @@ class Board
       intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
       defender_val + intercepter_val
     end
-    pieces[king.square] = king.legal_moves(self)
-    p pieces 
-    pieces
-    #p under_pin?(fetch_piece([7, 3]), king)
-    #pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king) }
+    pieces[king.square] = king.legal_moves(self, false, checker) unless king.legal_moves(self, false, checker).empty?
+    pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king, checker) }
   end
+
 
   def defenders(checker, king)
     defenders = {}
@@ -142,7 +142,7 @@ class Board
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        defenders[square.square] = checker.square if square.legal_moves(self).include?(checker.square) && !under_pin?(square ,king)
+        defenders[square.square] = checker.square if square.legal_moves(self).include?(checker.square)
       end
     end
     defenders
@@ -154,7 +154,7 @@ class Board
       row.each do |square|
         next if square.nil? || square.color != king.color
 
-        unless (square.legal_moves(self) & fire_line).empty? || under_pin?(square, king)
+        unless (square.legal_moves(self) & fire_line).empty?
           intercepter[square.square] = (square.legal_moves(self) & fire_line)
         end
       end
@@ -163,36 +163,19 @@ class Board
   end
 
   def search_fireline(checker, king_square)
-    return [] if %w[Pawn Knight King].include?(checker.class.to_s)
+    return [] if %w[Pawn Knight].include?(checker.class.to_s)
 
     checker.legal_moves(self, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
   end
-=begin
-  def under_pin?(piece, king)
-    return false if piece.is_a?(King)
-    
-    piece.all_moves(self, true, 'Hash').each_value do |value|
-      #value.each do |square|
-        #fetched_pieces = []
-        #square.nil? ? next : fetched_pieces << fetch_piece(square).class.to_s
-      #end
-      #fetched_pieces.include?(king) && fetched_pieces.include?(piece) && fetched_pieces.include?()
-      puts value.map { |move| fetch_piece(move).unicode unless fetch_piece(move).nil? }.join
-    end
-    false
-  end
-=end
 
-  def under_pin?(piece, king)
+  def under_pin?(piece, king, checker)
     return false if piece.is_a?(King)
 
     board = clone
     board.squares = board.squares.map { |row| row.map { |square| square == piece ? nil : square } }
-    fetch_checker(king, board).nil? ? false : true
-    #simulated_checker = fetch_checker(king, board)
-    #true_checker = fetch_checker(king)
-    #simulated_checker != true_checker
-
+    simulated_checker = fetch_checker(king, board, checker)
+    true_checker = fetch_checker(king)
+    simulated_checker != true_checker
   end
 
   def fetch_pinner(piece, king)
@@ -205,9 +188,11 @@ class Board
     pinner = fetch_pinner(piece, king)
     moves = []
     pinner.legal_moves(self, false, 'Hash').each_value { |value| moves += value if value.include?(piece.square) }
-    piece.legal_moves(self, true, 'Hash').each_value { |value| moves += value if value.include?(king.square) }
+    unless piece.is_a?(Pawn)
+      piece.legal_moves(self, true, 'Hash').each_value { |value| moves += value if value.include?(king.square) }
+      moves.delete(king.square)
+    end
     moves.delete(piece.square)
-    moves.delete(king.square)
     moves << pinner.square
   end
 end #endclass

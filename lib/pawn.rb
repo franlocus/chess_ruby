@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 class Pawn < Piece
-  def legal_moves(board, defence_move = false)
-    @color == "white" ? up_moves(board) + up_diagonals_attack(board, defence_move) : down_moves(board) + down_diagonals_attack(board, defence_move)
+  def legal_moves(board, defence_move = false, _ = false)
+    if @color == 'white'
+      up_moves(board) + up_diagonals_attack(board, defence_move)
+    else
+      down_moves(board) + down_diagonals_attack(board, defence_move)
+    end
   end
 
   def up_moves(board)

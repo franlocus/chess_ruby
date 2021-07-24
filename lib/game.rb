@@ -33,16 +33,17 @@ class ChessGame
       unless can_move?(player)
         abort "#{color == 'white' ? 'BLACK' : 'WHITE'} WINS by CHECK MATE\nGame over\n".reverse_color
       end
-      forced_turn(player)
+      checker = @board.fetch_checker(player.king, @board)
+      forced_turn(player, checker)
     else
       abort "DRAW by STALE MATE\nGame over\n".reverse_color unless can_move?(player)
       normal_turn(player)
     end
   end
 
-  def forced_turn(player)
+  def forced_turn(player, checker)
     puts "\nCHECK!\nPlayer #{player.color.underline} please enter the forced piece you would like to move:".cyan
-    forced_pieces = @board.forced_pieces(player.king)
+    forced_pieces = @board.forced_pieces(player.king, checker)
     selected_piece = player.select_piece(@board, forced_pieces.keys)
     piece_legal_moves = forced_pieces[selected_piece]
     selected_move = player.select_move(piece_legal_moves)
