@@ -8,7 +8,7 @@ class Board
     setup_black
     setup_whitex
     #@squares[1][0] = Pawn.new([1, 0], 'white')
-    #@squares[5][2] = Queen.new([5, 2], 'black')
+    @squares[5][2] = Queen.new([5, 2], 'black')
     @squares[6][6] = Rook.new([6, 6], 'black')
     @squares[7][3] = Queen.new([7, 3], 'white')
     #@squares[6][1] = Knight.new([6, 1], 'white')
@@ -54,8 +54,7 @@ class Board
     @squares[0] = [nil,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
-                   #Queen.new([0, 3], 'black'),
-                   nil,
+                   Queen.new([0, 3], 'black'),
                    @black_king,
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
@@ -173,9 +172,7 @@ class Board
 
     board = clone
     board.squares = board.squares.map { |row| row.map { |square| square == piece ? nil : square } }
-    simulated_checker = fetch_checker(king, board, checker)
-    true_checker = fetch_checker(king)
-    simulated_checker != true_checker
+    fetch_checker(king, board, checker).nil? ? false : true
   end
 
   def fetch_pinner(piece, king)
