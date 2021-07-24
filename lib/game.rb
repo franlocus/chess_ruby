@@ -20,7 +20,9 @@ class ChessGame
 
   def play_game
     loop do
+      display_score_board
       play_turn(@player_white)
+      display_score_board
       play_turn(@player_black)
     end
   end
@@ -28,7 +30,6 @@ class ChessGame
   private
 
   def play_turn(player, color = player.color)
-    display_score_board
     if @board.under_check?(color)
       unless can_move?(player)
         abort "#{color == 'white' ? 'BLACK' : 'WHITE'} WINS by CHECK MATE\nGame over\n".reverse_color
@@ -93,6 +94,10 @@ class ChessGame
                                                       when '3' then Bishop.new(to_square, color)
                                                       else Knight.new(to_square, color)
                                                       end
+  end
+
+  def castle
+    
   end
 
   def display_score_board

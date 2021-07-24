@@ -17,6 +17,7 @@ class Board
 
   def setup_whitex
     @white_king = King.new([6, 4], 'white')
+    @left_rook = King.new([6, 4], 'white')
     @squares[6] = [nil,
                    nil,
         
@@ -82,7 +83,7 @@ class Board
     if under_pin?(piece, player.king, checker)
       return [] if piece.is_a?(Knight)
 
-      pinned_fireline(piece, player.king) & piece.legal_moves(self)
+      pinned_fireline(piece, player.king, checker) & piece.legal_moves(self)
     else
       piece.legal_moves(self)
     end
@@ -123,17 +124,20 @@ class Board
   end
 
   def forced_pieces(king, checker)
-    defenders = defenders(checker, king)
-    intercepters = intercepters(checker, king)
-    pieces = defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
-      defender_val = [defender_val] unless defender_val.any?(Array)
-      intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
-      defender_val + intercepter_val
-    end
+    pieces = check_blockers(checker, king)
     pieces[king.square] = king.legal_moves(self, false, checker) unless king.legal_moves(self, false, checker).empty?
     pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king, checker) }
   end
 
+  def check_blockers(checker, king)
+    defenders = defenders(checker, king)
+    intercepters = intercepters(checker, king)
+    defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
+      defender_val = [defender_val] unless defender_val.any?(Array)
+      intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
+      defender_val + intercepter_val
+    end
+  end
 
   def defenders(checker, king)
     defenders = {}
@@ -175,14 +179,14 @@ class Board
     fetch_checker(king, board, checker).nil? ? false : true
   end
 
-  def fetch_pinner(piece, king)
+  def fetch_pinner(piece, king, checker)
     board = clone
     board.squares = board.squares.map { |row| row.map { |square| square == piece ? nil : square } }
-    fetch_checker(king, board)
+    fetch_checker(king, board, checker)
   end
 
-  def pinned_fireline(piece, king)
-    pinner = fetch_pinner(piece, king)
+  def pinned_fireline(piece, king, checker)
+    pinner = fetch_pinner(piece, king, checker)
     moves = []
     pinner.legal_moves(self, false, 'Hash').each_value { |value| moves += value if value.include?(piece.square) }
     unless piece.is_a?(Pawn)
