@@ -6,32 +6,13 @@ class Board
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
     setup_black
-    setup_whitex
+    setup_white
     #@squares[1][0] = Pawn.new([1, 0], 'white')
-    @squares[5][2] = Queen.new([5, 2], 'black')
-    @squares[6][6] = Rook.new([6, 6], 'black')
-    @squares[7][3] = Queen.new([7, 3], 'white')
+    #@squares[5][2] = Queen.new([5, 2], 'black')
+    #@squares[6][6] = Rook.new([6, 6], 'black')
+    #@squares[7][3] = Queen.new([7, 3], 'white')
     #@squares[6][1] = Knight.new([6, 1], 'white')
    
-  end
-
-  def setup_whitex
-    @white_king = King.new([6, 4], 'white')
-    @left_rook = King.new([6, 4], 'white')
-    @squares[6] = [nil,
-                   nil,
-        
-                   
-                   nil,
-                   
-                   nil,
-                   @white_king,
-                   Knight.new([6, 5], 'white'),
-                   nil,
-                   #Bishop.new([7, 5], 'white'),
-                   #Knight.new([7, 6], 'white'),
-                   nil]
-    #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_white
@@ -39,11 +20,8 @@ class Board
     @squares[7] = [Rook.new([7, 0], 'white'),
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
-                  # Queen.new([7, 3], 'white'),
-                  nil,
-                   @white_king,
-                   nil,
-                   nil,
+                   Queen.new([7, 3], 'white'),
+                   @white_king,nil,nil,
                    #Bishop.new([7, 5], 'white'),
                    #Knight.new([7, 6], 'white'),
                    Rook.new([7, 7], 'white')]
@@ -52,7 +30,7 @@ class Board
 
   def setup_black
     @black_king = King.new([0, 4], 'black')
-    @squares[0] = [nil,
+    @squares[0] = [Rook.new([0, 0], 'black'),
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
                    Queen.new([0, 3], 'black'),
