@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class King < Piece
+  attr_accessor :right_rook, :left_rook
 
   def initialize(square, color, left_rook, right_rook)
     super(square, color)

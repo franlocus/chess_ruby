@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative 'piece'
 require_relative 'rook'
 require_relative 'knight'
@@ -79,7 +78,9 @@ class ChessGame
     piece = @board.fetch_piece(from_square)
     piece.square = to_square
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
-    if piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
+    if castle_move?(piece, from_square, to_square)
+      castle(from_square, to_square, piece)
+    elsif piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
       promote_pawn(from_square, to_square, player)
     else
       @board.move_piece!(from_square, to_square, piece)
@@ -96,8 +97,23 @@ class ChessGame
                                                       end
   end
 
-  def castle
-    
+  def castle_move?(piece, from_square, to_square)
+    piece.is_a?(King) &&
+      [[7, 4], [0, 4]].include?(from_square) &&
+      [[0, 2], [0, 6], [7, 2], [7, 6]].include?(to_square)
+  end
+
+  def castle(from_square, to_square, king)
+    @board.move_piece!(from_square, to_square, king)
+    if to_square.last.eql?(6)
+      rook = king.right_rook
+      rook_to = king.color == 'white' ? [7, 5] : [0, 5]
+    else
+      rook = king.left_rook
+      rook_to = king.color == 'white' ? [7, 3] : [0, 3]
+    end
+    @board.move_piece!(rook.square, rook_to, rook)
+    rook.square = rook_to
   end
 
   def display_score_board
@@ -120,8 +136,10 @@ class ChessGame
   def black_square?(idx_row, idx_square)
     idx_row.even? && idx_square.even? || idx_row.odd? && idx_square.odd?
   end
+  
 end
 
 chess = ChessGame.new
 
 chess.play_game
+

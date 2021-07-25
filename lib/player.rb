@@ -14,7 +14,7 @@ class Player
     
     loop do
       input = gets.chomp
-      return to_coordinates(input) if input.match?(/[a-h][1-8]$/)
+      return to_coordinates(input) if input.match?(/^[a-h][1-8]$/)
 
       puts "Input error, please introduce a valid algebraic notation, eg. 'a1' or 'b5'".red
     end

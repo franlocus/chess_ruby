@@ -16,28 +16,32 @@ class Board
   end
 
   def setup_white
-    @white_king = King.new([7, 4], 'white')
-    @squares[7] = [Rook.new([7, 0], 'white'),
+    left_rook = Rook.new([7, 0], 'white')
+    right_rook = Rook.new([7, 7], 'white')
+    @white_king = King.new([7, 4], 'white', left_rook, right_rook)
+    @squares[7] = [left_rook,
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
                    Queen.new([7, 3], 'white'),
                    @white_king,nil,nil,
                    #Bishop.new([7, 5], 'white'),
                    #Knight.new([7, 6], 'white'),
-                   Rook.new([7, 7], 'white')]
+                   right_rook]
     #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_black
-    @black_king = King.new([0, 4], 'black')
-    @squares[0] = [Rook.new([0, 0], 'black'),
+    left_rook = Rook.new([0, 0], 'black')
+    right_rook = Rook.new([0, 7], 'black')
+    @black_king = King.new([0, 4], 'black', left_rook, right_rook)
+    @squares[0] = [left_rook,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
                    Queen.new([0, 3], 'black'),
                    @black_king,
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
-                   Rook.new([0, 7], 'black')]
+                   right_rook]
     #@squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
   end
 
