@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class King < Piece
+
+  def initialize(square, color, left_rook, right_rook)
+    super(square, color)
+    @left_rook = left_rook
+    @right_rook = right_rook
+  end
+
   def legal_moves(board, defence_move = false, checker = false)
     if checker
       xrayed = xrayed(board, checker)
@@ -49,21 +56,17 @@ class King < Piece
 
   def can_short_castle?(board)
     if color == 'white'
-      @rook ||= board.fetch_piece([7, 7])
-      short_castle?(board, 7, 'black', [[7, 5], [7, 6]], @rook)
+      short_castle?(board, 7, 'black', [[7, 5], [7, 6]], @right_rook)
     else
-      @rook ||= board.fetch_piece([0, 7])
-      short_castle?(board, 0, 'white', [[0, 5], [0, 6]], @rook)
+      short_castle?(board, 0, 'white', [[0, 5], [0, 6]], @right_rook)
     end
   end
 
   def can_long_castle?(board)
     if color == 'white'
-      @rook ||= board.fetch_piece([7, 0])
-      long_castle?(board, 7, 'black', [[7, 1], [7, 2], [7, 3]], @rook)
+      long_castle?(board, 7, 'black', [[7, 1], [7, 2], [7, 3]], @left_rook)
     else
-      @rook ||= board.fetch_piece([0, 0])
-      long_castle?(board, 0, 'white', [[0, 1], [0, 2], [0, 3]], @rook)
+      long_castle?(board, 0, 'white', [[0, 1], [0, 2], [0, 3]], @left_rook)
     end
   end
 
