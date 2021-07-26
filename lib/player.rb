@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
 class Player
-  attr_accessor :score, :king
+  attr_accessor :score, :king, :last_movement, :last_piece
   attr_reader :color
 
   def initialize(color, king)
     @color = color
     @king = king
     @score = []
+    @last_piece = nil
+    @last_movement = nil
   end
 
   def input_piece
-    
     loop do
       input = gets.chomp
       return to_coordinates(input) if input.match?(/^[a-h][1-8]$/)
@@ -24,13 +25,13 @@ class Player
     unless forced_pieces.nil?
       puts "You can only move: #{to_algebraic(forced_pieces)}"
       while (selected_piece = input_piece)
-        return selected_piece if forced_pieces.include?(selected_piece)
+        return @last_piece = selected_piece if forced_pieces.include?(selected_piece)
 
         puts "Input error: #{''.underline}.\nDon't worry, try again!".red
       end
     end
     while (selected_piece = input_piece)
-      return selected_piece unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
+      return @last_piece = selected_piece unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
 
       puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
     end
@@ -39,7 +40,7 @@ class Player
   def select_move(legal_moves)
     puts "The piece can move to:\n#{to_algebraic(legal_moves).green}\nNow type where the piece should move:"
     while (selected_move = input_piece)
-      return selected_move if legal_moves.include?(selected_move) || [legal_moves].include?(selected_move)
+      return @last_movement = selected_move if legal_moves.include?(selected_move) || [legal_moves].include?(selected_move)
 
       puts "Input error: #{'invalid legal move'.underline}.\nDon't worry, try again!".red
     end
