@@ -21,18 +21,26 @@ class Player
   end
 
   def select_piece(board, forced_pieces = nil)
-    unless forced_pieces.nil?
-      puts "You can only move: #{to_algebraic(forced_pieces)}"
+    if forced_pieces
+      select_forced_piece(forced_pieces)
+    else
       while (selected_piece = input_piece)
-        return @last_turn_from = selected_piece if forced_pieces.include?(selected_piece)
+        unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
+          return @last_turn_from = selected_piece
 
-        puts "Input error: #{''.underline}.\nDon't worry, try again!".red
+        end
+
+        puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
       end
     end
-    while (selected_piece = input_piece)
-      return @last_turn_from = selected_piece unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
+  end
 
-      puts "Input error, that's unavailable because is: #{'blank or enemy piece'.underline}.\nDon't worry, try again!".red
+  def select_forced_piece(forced_pieces)
+    puts "You can only move: #{to_algebraic(forced_pieces)}"
+    while (selected_piece = input_piece)
+      return @last_turn_from = selected_piece if forced_pieces.include?(selected_piece)
+
+      puts "Input error: #{''.underline}.\nDon't worry, try again!".red
     end
   end
 
