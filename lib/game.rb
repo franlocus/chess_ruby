@@ -12,9 +12,9 @@ require_relative 'colorize'
 
 class ChessGame
   def initialize
-    @board = Board.new
-    @player_white = Player.new('white', @board.white_king)
-    @player_black = Player.new('black', @board.black_king)
+    @player_white = Player.new('white')
+    @player_black = Player.new('black')
+    @board = Board.new(@player_white, @player_black)
   end
 
   def play_game
@@ -29,7 +29,7 @@ class ChessGame
   private
 
   def play_turn(player, color = player.color)
-    if @board.under_check?(color)
+    if @board.under_check?(player)
       unless can_move?(player)
         abort "#{color == 'white' ? 'BLACK' : 'WHITE'} WINS by CHECK MATE\nGame over\n".reverse_color
       end
@@ -80,6 +80,8 @@ class ChessGame
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
     if castle_move?(piece, from_square, to_square)
       castle(from_square, to_square, piece)
+    elsif piece.en_passant == [to_square]
+      en_passant(from_square, to_square, piece, player)
     elsif piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
       promote_pawn(from_square, to_square, player)
     else
@@ -114,6 +116,14 @@ class ChessGame
     end
     @board.move_piece!(rook.square, rook_to, rook)
     rook.square = rook_to
+  end
+
+  def en_passant(from_square, to_square, piece, player)
+    @board.move_piece!(from_square, to_square, piece)
+    enemy_player = player.color == 'white' ? @player_black : @player_white
+    eaten_pawn = @board.fetch_piece(enemy_player.last_turn_to)
+    player.score << eaten_pawn.unicode
+    @board.squares.map! { |row| row.map! { |square| square == eaten_pawn ? nil : square } }
   end
 
   def display_score_board

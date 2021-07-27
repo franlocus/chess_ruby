@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class Board
-  attr_accessor :squares, :white_king, :black_king
+  attr_accessor :squares, :player_white, :player_black
 
-  def initialize
+  def initialize(player_white, player_black)
     @squares = Array.new(8) { Array.new(8, nil) }
-    setup_black
+    @player_white = player_white
+    @player_black = player_black
     setup_white
+    setup_black
     #@squares[1][0] = Pawn.new([1, 0], 'white')
     #@squares[5][2] = Queen.new([5, 2], 'black')
     #@squares[6][6] = Rook.new([6, 6], 'black')
@@ -18,31 +20,31 @@ class Board
   def setup_white
     left_rook = Rook.new([7, 0], 'white')
     right_rook = Rook.new([7, 7], 'white')
-    @white_king = King.new([7, 4], 'white', left_rook, right_rook)
+    @player_white.king = King.new([7, 4], 'white', left_rook, right_rook)
     @squares[7] = [left_rook,
                    Knight.new([7, 1], 'white'),
                    Bishop.new([7, 2], 'white'),
                    Queen.new([7, 3], 'white'),
-                   @white_king,nil,nil,
+                   @player_white.king,nil,nil,
                    #Bishop.new([7, 5], 'white'),
                    #Knight.new([7, 6], 'white'),
                    right_rook]
-    #@squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
+    @squares[6].map!.with_index { |_, idx| Pawn.new([6, idx], 'white') }
   end
 
   def setup_black
     left_rook = Rook.new([0, 0], 'black')
     right_rook = Rook.new([0, 7], 'black')
-    @black_king = King.new([0, 4], 'black', left_rook, right_rook)
+    @player_black.king = King.new([0, 4], 'black', left_rook, right_rook)
     @squares[0] = [left_rook,
                    Knight.new([0, 1], 'black'),
                    Bishop.new([0, 2], 'black'),
                    Queen.new([0, 3], 'black'),
-                   @black_king,
+                   @player_black.king,
                    Bishop.new([0, 5], 'black'),
                    Knight.new([0, 6], 'black'),
                    right_rook]
-    #@squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
+    @squares[1].map!.with_index { |_, idx| Pawn.new([1, idx], 'black') }
   end
 
   def piece?(coordinates)
@@ -89,9 +91,9 @@ class Board
     piece.has_moved = true
   end
 
-  def under_check?(player_color)
-    attacked_squares = defended_squares_by(player_color == 'white' ? 'black' : 'white')
-    attacked_squares.include?(player_color == 'white' ? @white_king.square : @black_king.square)
+  def under_check?(player)
+    attacked_squares = defended_squares_by(player.color == 'white' ? 'black' : 'white')
+    attacked_squares.include?(player.king.square)
   end
 
   def fetch_checker(king, board = self, checker = false)
