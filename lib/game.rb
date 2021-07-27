@@ -80,7 +80,7 @@ class ChessGame
     player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
     if castle_move?(piece, from_square, to_square)
       castle(from_square, to_square, piece)
-    elsif piece.en_passant == [to_square]
+    elsif piece.is_a?(Pawn) && piece.en_passant == [to_square]
       en_passant(from_square, to_square, piece, player)
     elsif piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
       promote_pawn(from_square, to_square, player)
