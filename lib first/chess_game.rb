@@ -1,16 +1,7 @@
 # frozen_string_literal: true
-require_relative 'piece'
-require_relative 'rook'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'queen'
-require_relative 'pawn'
-require_relative 'king'
-require_relative 'board'
-require_relative 'player'
-require_relative 'colorize'
 
 class ChessGame
+
   def initialize
     @player_white = Player.new('white')
     @player_black = Player.new('black')
@@ -18,6 +9,7 @@ class ChessGame
   end
 
   def play_game
+    #return save_game
     loop do
       display_score_board
       play_turn(@player_white)
@@ -146,10 +138,4 @@ class ChessGame
   def black_square?(idx_row, idx_square)
     idx_row.even? && idx_square.even? || idx_row.odd? && idx_square.odd?
   end
-  
 end
-
-chess = ChessGame.new
-
-chess.play_game
-
