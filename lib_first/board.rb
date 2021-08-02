@@ -9,12 +9,6 @@ class Board
     @player_black = player_black
     setup_white
     setup_black
-    #@squares[1][0] = Pawn.new([1, 0], 'white')
-    #@squares[5][2] = Queen.new([5, 2], 'black')
-    #@squares[6][6] = Rook.new([6, 6], 'black')
-    #@squares[7][3] = Queen.new([7, 3], 'white')
-    #@squares[6][1] = Knight.new([6, 1], 'white')
-   
   end
 
   def setup_white

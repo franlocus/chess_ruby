@@ -9,7 +9,6 @@ class ChessGame
   end
 
   def play_game
-    #return save_game
     loop do
       display_score_board
       play_turn(@player_white)
