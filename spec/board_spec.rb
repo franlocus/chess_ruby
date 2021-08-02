@@ -19,10 +19,14 @@ describe Board do
     end
 
     it 'setup white and black pieces' do
+      # queen white
+      expect(subject.squares[7][3].piece).to be_a(Queen)
       # rook white
       expect(subject.squares[7].first.piece).to be_a(Rook)
       # pawn white
       expect(subject.squares[6].first.piece).to be_a(Pawn)
+      # queen black
+      expect(subject.squares[0][3].piece).to be_a(Queen)
       # rook black
       expect(subject.squares[0].first.piece).to be_a(Rook)
       # pawn black

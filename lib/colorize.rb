@@ -10,8 +10,9 @@ class String
   def magenta;        "\e[35m#{self}\e[0m" end
   def cyan;           "\e[36m#{self}\e[0m" end
   def gray;           "\e[37m#{self}\e[0m" end
+  def light_black;          "\e[40m#{self}\e[0m" end
   
-  def bg_black;       "\e[40m#{self}\e[0m" end
+  def bg_black;       "\e[60m#{self}\e[0m" end
   def bg_red;         "\e[41m#{self}\e[0m" end
   def bg_green;       "\e[42m#{self}\e[0m" end
   def bg_yellow;       "\e[43m#{self}\e[0m" end

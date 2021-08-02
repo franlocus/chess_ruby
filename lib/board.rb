@@ -14,10 +14,7 @@ class Board
 
   def initialize
     @squares = generate_squares
-    setup_mayor_pieces('white', 7)
-    setup_pawns('white', 6)
-    setup_mayor_pieces('black', 0)
-    setup_pawns('black', 1)
+    setup_pieces
   end
 
   def generate_squares
@@ -26,7 +23,14 @@ class Board
     end
   end
 
-  def setup_mayor_pieces(color, row)
+  def setup_pieces
+    mayors('white', 7)
+    pawns('white', 6)
+    mayors('black', 0)
+    pawns('black', 1)
+  end
+
+  def mayors(color, row)
     @squares[row].each_with_index do |square, idx|
       square.piece =  case idx
                       when 0 then Rook.new(color)
@@ -41,7 +45,7 @@ class Board
     end
   end
 
-  def setup_pawns(color, row)
+  def pawns(color, row)
     @squares[row].each { |square| square.piece = Pawn.new(color) }
   end
 
@@ -49,10 +53,17 @@ class Board
     @squares.each_with_index do |row, idx_row|
       print (idx_row - 8).abs, ' '
       row.each do |square|
-        print square.bg_color == 'black' ? '  '.bg_black : '  '.bg_gray
+        print square.bg_color == 'black' ? square.piece.unicode.bg_black : square.piece.unicode.bg_gray
       end
       print "\n"
     end
     print "  a b c d e f g h \n"
+  end
+end
+
+
+class NilClass
+  def unicode
+   '  '
   end
 end
