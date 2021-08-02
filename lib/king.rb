@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class King
+class King < Piece
   
 end

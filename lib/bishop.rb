@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Bishop
+class Bishop < Piece
   
 end

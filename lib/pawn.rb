@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Pawn
+class Pawn < Piece
   
 end
