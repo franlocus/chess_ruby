@@ -2,8 +2,10 @@
 
 require_relative '../lib/interface'
 require_relative '../lib/colorize'
+require_relative '../lib/board'
 
 describe Interface do
+  let(:subject) { described_class.new(Board.new) }
   describe '#game_type' do
     context 'outputs welcome message with options to start new game or laod game' do
       context 'user input invalid option, then valid' do
@@ -42,6 +44,18 @@ describe Interface do
         expect(subject).to receive(:puts).exactly(3) # Intructions, error, intructions
         subject.prompt_valid_input
       end
+    end
+  end
+
+  describe '#display_board' do
+    before do
+      puts "\n"
+      puts subject.display_board
+      allow(subject).to receive(:print)
+    end
+    it 'print colored chessboard with row number and letters row' do
+      expect(subject).to receive(:print)
+      subject.display_board
     end
   end
 end

@@ -48,17 +48,6 @@ class Board
   def pawns(color, row)
     @squares[row].each { |square| square.piece = Pawn.new(color) }
   end
-
-  def display
-    @squares.each_with_index do |row, idx_row|
-      print (idx_row - 8).abs, ' '
-      row.each do |square|
-        print square.bg_color == 'black' ? square.piece.unicode.bg_black : square.piece.unicode.bg_gray
-      end
-      print "\n"
-    end
-    print "  a b c d e f g h \n"
-  end
 end
 
 

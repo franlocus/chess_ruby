@@ -33,15 +33,5 @@ describe Board do
       expect(subject.squares[1].first.piece).to be_a(Pawn)
     end
   end
-  describe '#display' do
-    before do
-      puts "\n"
-      puts subject.display
-      allow(subject).to receive(:print)
-    end
-    it 'print colored chessboard with row number and letters row' do
-      expect(subject).to receive(:print)
-      subject.display
-    end
-  end
+  
 end
