@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 class Interface
-  def welcome
-    puts "Welcome to Chess!\nGet ready to play, enjoy."
+  def game_type
+    puts "Welcome to Chess!\nGet ready to play, enjoy.\nSelect a game mode:\n1: New Game or 2: Load Game"
+    while (game_type = gets.chomp.to_i)
+      return game_type if [1, 2].include?(game_type)
+
+      puts 'Please choose 1: New Game or 2: Load Game'
+    end
   end
 
   def prompt_valid_input

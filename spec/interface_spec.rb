@@ -4,10 +4,17 @@ require_relative '../lib/interface'
 require_relative '../lib/colorize'
 
 describe Interface do
-  describe '#welcome' do
-    it 'output welcome message' do
-      expect(subject).to receive(:puts)
-      subject.welcome
+  describe '#game_type' do
+    context 'outputs welcome message with options to start new game or laod game' do
+      context 'user input invalid option, then valid' do
+        before do
+          allow(subject).to receive(:gets).and_return("25", "1\n")
+        end
+        it 'puts error once then return game_type 1' do
+          expect(subject).to receive(:puts).twice # intruction and error warning 
+          expect(subject.game_type).to eq(1)
+        end
+      end
     end
   end
   describe '#prompt_valid input' do
@@ -36,6 +43,5 @@ describe Interface do
         subject.prompt_valid_input
       end
     end
-    
   end
 end
