@@ -20,7 +20,7 @@ class ChessGame
     game_type = @interface.game_type
     game_type == 1 ? new_game : load_game
   end
-  
+
   def new_game
     @interface.display_board
     @current_player || @player_white

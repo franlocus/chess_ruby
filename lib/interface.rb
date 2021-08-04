@@ -17,20 +17,22 @@ class Interface
 
   def player_select_piece(current_player)
     while (coordinates = to_coordinates(prompt_valid_input))
-      if @board.player_piece?(coordinates, current_player.color) # && @moves_calculator
-        return coordinates 
-      else
-        puts 'Sorry, there isn\'t available piece for you in that square'
-      end
+      return coordinates if validate_piece(coordinates, current_player)
+
+      puts 'Sorry, there isn\'t available piece for you in that square'
     end
+  end
+
+  def validate_piece(coordinates, current_player)
+    @board.player_piece?(coordinates, current_player.color) # && @moves_calculator
   end
 
   def prompt_valid_input
     puts "\nPlayer #color please enter the piece you would like to move:"
-    validate(gets.chomp) || try_again
+    validate_algebraic(gets.chomp) || try_again
   end
 
-  def validate(input)
+  def validate_algebraic(input)
     return input if input.match?(/^[a-h][1-8]$/)
   end
 
@@ -38,7 +40,7 @@ class Interface
     puts "Sorry, input error! Please introduce a valid algebraic notation, eg. 'a1' or 'b5'".red
     prompt_valid_input
   end
-  # TODO Complete who will receive the output from prompt to coordinates
+
   def to_coordinates(algebraic)
     algebraic = algebraic.chars
     [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]

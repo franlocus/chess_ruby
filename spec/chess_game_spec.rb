@@ -27,12 +27,20 @@ describe ChessGame do
   end
 
   describe '#new_game' do
-    xit 'calls to interface to display board' do
+    before do
+      allow(subject).to receive(:turn_order)
+      allow(subject).to receive(:game_over)
+    end
+    it 'calls to interface to display board' do
       interface = subject.instance_variable_get(:@interface)
       expect(interface).to receive(:display_board)
       subject.new_game
-      # disabled until loop break condition
     end
+  end
 
+  describe '#turn_order' do
+    xit '' do
+      
+    end
   end
 end
