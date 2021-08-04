@@ -48,11 +48,15 @@ class Board
   def pawns(color, row)
     @squares[row].each { |square| square.piece = Pawn.new(color) }
   end
-end
 
+  def player_piece?(coordinates, player_color)
+    selected_piece = squares.flatten.find { |square| square.y == coordinates[0] && square.x == coordinates[1] }.piece
+    selected_piece.color == player_color unless selected_piece.nil?
+  end
+end
 
 class NilClass
   def unicode
-   '  '
+    '  '
   end
 end

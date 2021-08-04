@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib_first/moves_calculator'
+require_relative '../lib/moves_calculator'
 
 describe MovesCalculator do
   describe '#legal_moves' do

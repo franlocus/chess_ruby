@@ -2,7 +2,7 @@
 
 class Square
   attr_accessor :piece
-  attr_reader :bg_color
+  attr_reader :bg_color, :y, :x
 
   def initialize(y_axis, x_axis)
     @y = y_axis

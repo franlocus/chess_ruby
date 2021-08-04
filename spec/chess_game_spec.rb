@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require_relative '../lib/chess_game'
 require_relative '../lib/player'
+require_relative '../lib/moves_controller'
+require_relative '../lib/interface'
 
 describe ChessGame do
   describe '#initialize' do
@@ -17,14 +19,10 @@ describe ChessGame do
   end
 
   describe '#switch_current_player' do
-    before do
-      subject.instance_variable_set(:@current_player, Player.new('white'))
-    end
     it 'change current player according' do
-      current_player_before = subject.instance_variable_get(:@current_player)
-      subject.switch_current_player
-      current_player_after = subject.instance_variable_get(:@current_player)
-      expect(current_player_before.color).not_to eq(current_player_after.color)
+      subject.switch_current_player # make current = white
+      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).color }.from('white').to('black')
+      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).color }.from('black').to('white')
     end
   end
 

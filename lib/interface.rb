@@ -3,6 +3,7 @@
 class Interface
   def initialize(board)
     @board = board
+    @moves_calculator = MovesCalculator.new
   end
 
   def game_type
@@ -11,6 +12,16 @@ class Interface
       return game_type if [1, 2].include?(game_type)
 
       puts 'Please choose 1 or 2'
+    end
+  end
+
+  def player_select_piece(current_player)
+    while (coordinates = to_coordinates(prompt_valid_input))
+      if @board.player_piece?(coordinates, current_player.color) # && @moves_calculator
+        return coordinates 
+      else
+        puts 'Sorry, there isn\'t available piece for you in that square'
+      end
     end
   end
 

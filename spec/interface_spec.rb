@@ -19,6 +19,33 @@ describe Interface do
       end
     end
   end
+  describe '#player_select_piece' do
+    context 'valid input' do
+      before do
+        allow(subject).to receive(:puts)
+        valid_input = 'a1'
+        allow(subject).to receive(:gets).and_return(valid_input)
+      end
+      it 'return algebraic input to coordinates' do
+        current_player = Player.new('white')
+        expect(subject.player_select_piece(current_player)).to eq([7, 0])
+      end
+    end
+    context 'invalid input twice' do
+      before do
+        allow(subject).to receive(:puts)
+        invalid_format_input = 'a12'
+        invalid_piece_input = 'a3' # There is no piece
+        valid_input = 'a1'
+        allow(subject).to receive(:gets).and_return(invalid_format_input, invalid_piece_input, valid_input)
+      end
+      it 'return algebraic input to coordinates' do
+        expect(subject).to receive(:puts).exactly(5) # prompt, try_again, prompt, error select_piece, prompt
+        current_player = Player.new('white')
+        expect(subject.player_select_piece(current_player)).to eq([7, 0])
+      end
+    end
+  end
   describe '#prompt_valid input' do
     before do
       allow(subject).to receive(:puts)
