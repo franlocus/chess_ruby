@@ -3,32 +3,24 @@
 class Interface
   def initialize(board)
     @board = board
-    @moves_calculator = MovesCalculator.new
+    @moves_calculator = MovesCalculator.new(@board)
   end
 
   def game_type
-    puts "Welcome to Chess!\nGet ready to play, enjoy.\nSelect a game mode:\n1: New Game\n2: Load Game"
+    puts "Welcome to Chess!\nGet ready to play, enjoy.\nSelect a game mode:\n1: New Game\n2: Load Game".cyan
     while (game_type = gets.chomp.to_i)
       return game_type if [1, 2].include?(game_type)
 
-      puts 'Please choose 1 or 2'
+      puts 'Please choose 1 or 2'.red
     end
   end
 
-  def player_select_piece(current_player)
-    while (coordinates = to_coordinates(prompt_valid_input))
-      return coordinates if validate_piece(coordinates, current_player)
-
-      puts 'Sorry, there isn\'t available piece for you in that square'
-    end
-  end
-
-  def validate_piece(coordinates, current_player)
-    @board.player_piece?(coordinates, current_player.color) # && @moves_calculator
+  def player_input_piece
+    to_coordinates(prompt_valid_input)
   end
 
   def prompt_valid_input
-    puts "\nPlayer #color please enter the piece you would like to move:"
+    puts "\nPlayer #color please enter the piece you would like to move:".cyan
     validate_algebraic(gets.chomp) || try_again
   end
 

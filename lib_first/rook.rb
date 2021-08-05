@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Rook < Piece
-  def legal_moves(board, defence_move = false, output_format = 'Array')
+  def moves(board, preventive_move = false, hash_format = false)
     moves = {
-      'upward_moves' => upward_moves(board, defence_move),
-      'rightward_moves' => rightward_moves(board, defence_move),
-      'downward_moves' => downward_moves(board, defence_move),
-      'leftward_moves' => leftward_moves(board, defence_move)
+      'upward_moves' => upward_moves(board, preventive_move),
+      'rightward_moves' => rightward_moves(board, preventive_move),
+      'downward_moves' => downward_moves(board, preventive_move),
+      'leftward_moves' => leftward_moves(board, preventive_move)
     }
-    output_format == 'Hash' ? moves : moves.values.flatten(1)
+    hash_format ? moves : moves.values.flatten(1)
   end
 
   def unicode

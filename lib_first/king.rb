@@ -9,24 +9,24 @@ class King < Piece
     @right_rook = right_rook
   end
 
-  def legal_moves(board, defence_move = false, checker = false)
+  def moves(board, preventive_move = false, checker = false)
     if checker
       xrayed = xrayed(board, checker)
-      normal_legal_moves(board, defence_move).reject { |move| xrayed.include?(move) }
+      normal_legal_moves(board, preventive_move).reject { |move| xrayed.include?(move) }
     else
-      normal_legal_moves(board, defence_move) + castle_moves(board)
+      normal_legal_moves(board, preventive_move) + castle_moves(board)
     end
   end
 
-  def normal_legal_moves(board, defence_move)
+  def normal_legal_moves(board, preventive_move)
     moves_vector = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
-    moves_vector.map { |y, x| [square[0] + y, square[1] + x] }.select { |move| valid_move?(move, board, defence_move) }
+    moves_vector.map { |y, x| [square[0] + y, square[1] + x] }.select { |move| valid_move?(move, board, preventive_move) }
   end
 
-  def valid_move?(move, board, defence_move)
+  def valid_move?(move, board, preventive_move)
     within_board?(move) &&
       !board.defended_squares_by(@color == 'white' ? 'black' : 'white').include?(move) &&
-      ((!board.piece?(move) || board.enemy_piece?(move,  @color)) || (defence_move && board.piece?(move)))
+      ((!board.piece?(move) || board.enemy_piece?(move,  @color)) || (preventive_move && board.piece?(move)))
   end
 
   def xrayed(board, checker)

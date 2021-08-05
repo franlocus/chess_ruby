@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Bishop < Piece
-  def legal_moves(board, defence_move = false, output_format = 'Array')
+  def moves(board, preventive_move = false, hash_format = false)
     moves = {
-      'upright_moves' => upright_moves(board, defence_move),
-      'downright_moves' => downright_moves(board, defence_move),
-      'downleft_moves' => downleft_moves(board, defence_move),
-      'upleft_moves' => upleft_moves(board, defence_move)
+      'upright_moves' => upright_moves(board, preventive_move),
+      'downright_moves' => downright_moves(board, preventive_move),
+      'downleft_moves' => downleft_moves(board, preventive_move),
+      'upleft_moves' => upleft_moves(board, preventive_move)
     }
-    output_format == 'Hash' ? moves : moves.values.flatten(1)
+    hash_format ? moves : moves.values.flatten(1)
   end
 
   def unicode

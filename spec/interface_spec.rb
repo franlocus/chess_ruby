@@ -19,7 +19,7 @@ describe Interface do
       end
     end
   end
-  describe '#player_select_piece' do
+  describe '#player_input_piece' do
     context 'valid input' do
       before do
         allow(subject).to receive(:puts)
@@ -27,22 +27,19 @@ describe Interface do
         allow(subject).to receive(:gets).and_return(valid_input)
       end
       it 'return algebraic input to coordinates' do
-        current_player = Player.new('white')
-        expect(subject.player_select_piece(current_player)).to eq([7, 0])
+        expect(subject.player_input_piece).to eq([7, 0])
       end
     end
     context 'invalid input twice' do
       before do
         allow(subject).to receive(:puts)
         invalid_format_input = 'a12'
-        invalid_piece_input = 'a3' # There is no piece
         valid_input = 'a1'
-        allow(subject).to receive(:gets).and_return(invalid_format_input, invalid_piece_input, valid_input)
+        allow(subject).to receive(:gets).and_return(invalid_format_input, invalid_format_input, valid_input)
       end
       it 'return algebraic input to coordinates' do
         expect(subject).to receive(:puts).exactly(5) # prompt, try_again, prompt, error select_piece, prompt
-        current_player = Player.new('white')
-        expect(subject.player_select_piece(current_player)).to eq([7, 0])
+        expect(subject.player_input_piece).to eq([7, 0])
       end
     end
   end
@@ -80,7 +77,7 @@ describe Interface do
       puts subject.display_board
       allow(subject).to receive(:print)
     end
-    it 'print colored chessboard with row number and letters row' do
+    xit 'print colored chessboard with row number and letters row' do
       expect(subject).to receive(:print)
       subject.display_board
     end

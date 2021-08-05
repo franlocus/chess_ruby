@@ -56,7 +56,7 @@ class Board
     square_to_check.nil? ? false : square_to_check.color != caller_color
   end
 
-  def legal_moves(coordinates, player, checker = nil)
+  def moves(coordinates, player, checker = nil)
     piece = fetch_piece(coordinates)
     if under_pin?(piece, player.king, checker)
       return [] if piece.is_a?(Knight)
