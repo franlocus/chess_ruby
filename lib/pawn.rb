@@ -5,11 +5,10 @@ class Pawn < Piece
 
   def moves(board, preventive_move = false, _ = false)
     if @color == 'white'
-      up_moves(board) # + up_diagonals_attack(board, preventive_move) 
+      up_moves(board) + up_diagonals_attack(board, preventive_move)
       # + en_passant_move(board, board.player_black, 1, 3, 2)
     else
-      down_moves(board) 
-      #+ down_diagonals_attack(board, preventive_move) 
+      down_moves(board) + down_diagonals_attack(board, preventive_move) 
       # + en_passant_move(board, board.player_white, 6, 4, 5)
     end
   end
@@ -53,12 +52,20 @@ class Pawn < Piece
 
   def up_diagonals_attack(board, preventive_move)
     up_diagonals = [[square[0] - 1, square[1] - 1], [square[0] - 1, square[1] + 1]]
-    up_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece(diagonal) && preventive_move) }
+    up_diagonals.keep_if do |diagonal|
+      if encounter_piece?(board, diagonal)
+        preventive_move || can_capture?(board, diagonal)
+      end
+    end
   end
 
   def down_diagonals_attack(board, preventive_move)
     down_diagonals = [[square[0] + 1, square[1] - 1], [square[0] + 1, square[1] + 1]]
-    down_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece(diagonal) && preventive_move) }
+    down_diagonals.keep_if do |diagonal|
+      if encounter_piece?(board, diagonal)
+        preventive_move || can_capture?(board, diagonal)
+      end
+    end
   end
   
   def unicode

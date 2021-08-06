@@ -29,27 +29,35 @@ describe MovesCalculator do
     it 'returns 2 pawns\'s moves from d2' do
       expect(subject.legal_moves([6, 3])).to eq([[5, 3], [4, 3]])
     end
-    it 'returns 1 pawns\'s move from e2 if there is a piece in e4' do
-      subject.board.squares[4][4] = subject.board.squares[0][3]
-      subject.board.squares[4][4].square = [4, 4]
-      expect(subject.legal_moves([6, 4])).to match_array([[5, 4]])
-    end
     it 'returns 1 pawns\'s move from a2 because pawn has moved' do
       subject.board.squares[6][0].moved = true
       expect(subject.legal_moves([6, 0])).to match_array([[5, 0]])
+    end
+    it 'returns 1 pawns\'s move from e2 if there is a piece in e4' do
+      subject.board.squares[4][4] = subject.board.squares[0][3]
+      expect(subject.legal_moves([6, 4])).to match_array([[5, 4]])
+    end
+    it 'can capture diagonals from f2 if there is an enemy piece in e3 and g3' do
+      subject.board.squares[5][4] = subject.board.squares[0][3]
+      subject.board.squares[5][6] = subject.board.squares[0][2]
+      expect(subject.legal_moves([6, 5])).to match_array([[4, 5], [5, 4], [5, 5], [5, 6]])
     end
     # black
     it 'returns 2 pawns\'s moves from d7' do
       expect(subject.legal_moves([1, 3])).to eq([[2, 3], [3, 3]])
     end
-    it 'returns 1 pawns\'s move from e7 if there is a piece in e5' do
-      subject.board.squares[3][4] = subject.board.squares[7][3]
-      subject.board.squares[3][4].square = [3, 4]
-      expect(subject.legal_moves([1, 4])).to match_array([[2, 4]])
-    end
     it 'returns 1 pawns\'s move from a7 because pawn has moved' do
       subject.board.squares[1][0].moved = true
       expect(subject.legal_moves([1, 0])).to match_array([[2, 0]])
+    end
+    it 'returns 1 pawns\'s move from e7 if there is a piece in e5' do
+      subject.board.squares[3][4] = subject.board.squares[7][3]
+      expect(subject.legal_moves([1, 4])).to match_array([[2, 4]])
+    end
+    it 'can capture diagonals from b7 if there is an enemy piece in a6 and c6' do
+      subject.board.squares[2][0] = subject.board.squares[7][0]
+      subject.board.squares[2][2] = subject.board.squares[7][7]
+      expect(subject.legal_moves([1, 1])).to match_array([[2, 0], [2, 1], [2, 2], [3, 1]])
     end
   end
   context 'modified boards' do
