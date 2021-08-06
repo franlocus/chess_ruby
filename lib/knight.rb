@@ -20,5 +20,3 @@ class Knight < Piece
     @color == "white" ? "♘ ".magenta : "♞ ".yellow 
   end
 end
-
-# ((!board.piece(move) || can_capture?(board, move)) || (board.piece(move) && preventive_move))
