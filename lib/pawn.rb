@@ -5,9 +5,12 @@ class Pawn < Piece
 
   def moves(board, preventive_move = false, _ = false)
     if @color == 'white'
-      up_moves(board) + up_diagonals_attack(board, preventive_move) + en_passant_move(board, board.player_black, 1, 3, 2)
+      up_moves(board) # + up_diagonals_attack(board, preventive_move) 
+      # + en_passant_move(board, board.player_black, 1, 3, 2)
     else
-      down_moves(board) + down_diagonals_attack(board, preventive_move) + en_passant_move(board, board.player_white, 6, 4, 5)
+      down_moves(board) 
+      #+ down_diagonals_attack(board, preventive_move) 
+      # + en_passant_move(board, board.player_white, 6, 4, 5)
     end
   end
 
@@ -31,17 +34,21 @@ class Pawn < Piece
   end
 
   def up_moves(board)
-    return [] if board.piece([square[0] - 1, square[1]])
-    return upward_moves(board).first(2) unless @has_moved || board.piece([square[0] - 2, square[1]])
-
-    [upward_moves(board).first]
+    two_moves_up = upward_moves(board).first(2)
+    if moved || encounter_piece?(board, two_moves_up.last)
+      two_moves_up.tap(&:pop)
+    else
+      two_moves_up
+    end
   end
 
   def down_moves(board)
-    return [] if board.piece([square[0] + 1, square[1]])
-    return downward_moves(board).first(2) unless @has_moved || board.piece([square[0] + 2, square[1]])
-
-    [downward_moves(board).first]
+    two_moves_down = downward_moves(board).first(2)
+    if moved || encounter_piece?(board, two_moves_down.last)
+      two_moves_down.tap(&:pop)
+    else
+      two_moves_down
+    end
   end
 
   def up_diagonals_attack(board, preventive_move)
