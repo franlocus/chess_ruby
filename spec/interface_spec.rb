@@ -77,7 +77,7 @@ describe Interface do
       puts subject.display_board
       allow(subject).to receive(:print)
     end
-    xit 'print colored chessboard with row number and letters row' do
+    it 'print colored chessboard with row number and letters row' do
       expect(subject).to receive(:print)
       subject.display_board
     end
