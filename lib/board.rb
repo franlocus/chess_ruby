@@ -17,27 +17,28 @@ class Board
     setup_pieces
   end
 
-  # def generate_squares
-  #  Array.new(8) { Array.new(8, nil) }.map.with_index do |row, idx_row|
-  #    row.map.with_index { |_, col_idx| Square.new(idx_row, col_idx) }
-  #  end
-  # end
-
   def setup_pieces
     mayors('white', 7)
-    #pawns('white', 6)
+    rooks_to_kings('white', 7)
+    pawns('white', 6)
     mayors('black', 0)
     pawns('black', 1)
+    rooks_to_kings('black', 0)
+  end
+
+  def rooks_to_kings(color, row)
+    left_rook = piece([row, 0])
+    right_rook = piece([row, 7])
+    squares[row][4] = King.new(color, [row, 4], left_rook, right_rook)
   end
 
   def mayors(color, row)
-    @squares[row].map!.with_index do |_, idx|
+    squares[row].map!.with_index do |_, idx|
       case idx
       when 0 then Rook.new(color, [row, idx])
       when 1 then Knight.new(color, [row, idx])
       when 2 then Bishop.new(color, [row, idx])
       when 3 then Queen.new(color, [row, idx])
-      when 4 then King.new(color, [row, idx])
       when 5 then Bishop.new(color, [row, idx])
       when 6 then Knight.new(color, [row, idx])
       else Rook.new(color, [row, idx])

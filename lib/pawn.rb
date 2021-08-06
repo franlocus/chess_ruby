@@ -31,27 +31,27 @@ class Pawn < Piece
   end
 
   def up_moves(board)
-    return [] if board.piece?([square[0] - 1, square[1]])
-    return upward_moves(board).first(2) unless @has_moved || board.piece?([square[0] - 2, square[1]])
+    return [] if board.piece([square[0] - 1, square[1]])
+    return upward_moves(board).first(2) unless @has_moved || board.piece([square[0] - 2, square[1]])
 
     [upward_moves(board).first]
   end
 
   def down_moves(board)
-    return [] if board.piece?([square[0] + 1, square[1]])
-    return downward_moves(board).first(2) unless @has_moved || board.piece?([square[0] + 2, square[1]])
+    return [] if board.piece([square[0] + 1, square[1]])
+    return downward_moves(board).first(2) unless @has_moved || board.piece([square[0] + 2, square[1]])
 
     [downward_moves(board).first]
   end
 
   def up_diagonals_attack(board, preventive_move)
     up_diagonals = [[square[0] - 1, square[1] - 1], [square[0] - 1, square[1] + 1]]
-    up_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece?(diagonal) && preventive_move) }
+    up_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece(diagonal) && preventive_move) }
   end
 
   def down_diagonals_attack(board, preventive_move)
     down_diagonals = [[square[0] + 1, square[1] - 1], [square[0] + 1, square[1] + 1]]
-    down_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece?(diagonal) && preventive_move) }
+    down_diagonals.keep_if { |diagonal| board.enemy_piece?(diagonal, color) || (board.piece(diagonal) && preventive_move) }
   end
   
   def unicode

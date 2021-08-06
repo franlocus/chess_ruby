@@ -28,9 +28,9 @@ describe ChessGame do
     end
   end
 
-  describe '#turn_order' do
-    xit '' do
-      
-    end
-  end
+  #describe '#turn_order' do
+  #  xit '' do
+  #    
+  #  end
+  #end
 end

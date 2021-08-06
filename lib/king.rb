@@ -12,21 +12,28 @@ class King < Piece
   def moves(board, preventive_move = false, checker = false)
     if checker
       xrayed = xrayed(board, checker)
-      normal_legal_moves(board, preventive_move).reject { |move| xrayed.include?(move) }
+      normal_moves(board, preventive_move).reject { |move| xrayed.include?(move) }
     else
-      normal_legal_moves(board, preventive_move) + castle_moves(board)
+      normal_moves(board, preventive_move) + castle_moves(board)
     end
   end
 
-  def normal_legal_moves(board, preventive_move)
-    moves_vector = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
-    moves_vector.map { |y, x| [square[0] + y, square[1] + x] }.select { |move| valid_move?(move, board, preventive_move) }
+  def normal_moves(board, preventive_move)
+    bordering_squares.select { |move| valid_move?(move, board, preventive_move) }
   end
 
   def valid_move?(move, board, preventive_move)
-    within_board?(move) &&
-      !board.defended_squares_by(@color == 'white' ? 'black' : 'white').include?(move) &&
-      ((!board.piece?(move) || board.enemy_piece?(move,  @color)) || (preventive_move && board.piece?(move)))
+    #return false if attacked_square?(board, move)
+
+    if encounter_piece?(board, move)
+      preventive_move || can_capture?(board, move)
+    else
+      true # it's a free square
+    end
+  end
+
+  def attacked_square?(board, move)
+    board.defended_squares_by(color == 'white' ? 'black' : 'white').include?(move) 
   end
 
   def xrayed(board, checker)
@@ -56,35 +63,35 @@ class King < Piece
 
   def can_short_castle?(board)
     if color == 'white'
-      short_castle?(board, 7, 'black', [[7, 5], [7, 6]], @right_rook)
+      short_castle?(board, 7, 'black', [[7, 5], [7, 6]], right_rook)
     else
-      short_castle?(board, 0, 'white', [[0, 5], [0, 6]], @right_rook)
+      short_castle?(board, 0, 'white', [[0, 5], [0, 6]], right_rook)
     end
   end
 
   def can_long_castle?(board)
     if color == 'white'
-      long_castle?(board, 7, 'black', [[7, 1], [7, 2], [7, 3]], @left_rook)
+      long_castle?(board, 7, 'black', [[7, 1], [7, 2], [7, 3]], left_rook)
     else
-      long_castle?(board, 0, 'white', [[0, 1], [0, 2], [0, 3]], @left_rook)
+      long_castle?(board, 0, 'white', [[0, 1], [0, 2], [0, 3]], left_rook)
     end
   end
 
   def short_castle?(board, row, enemy, coordinates, rook)
-    return false if @has_moved
+    return false if moved
 
-    !rook.has_moved && board.squares[row][5..6].compact.empty? &&
+    !rook.moved && board.squares[row][5..6].compact.empty? &&
       (board.defended_squares_by(enemy) & coordinates).empty?
   end
 
   def long_castle?(board, row, enemy, coordinates, rook)
-    return false if @has_moved
+    return false if moved
 
-    !rook.has_moved && board.squares[row][1..3].compact.empty? &&
+    !rook.moved && board.squares[row][1..3].compact.empty? &&
       (board.defended_squares_by(enemy) & coordinates).empty?
   end
   
   def unicode
-    @color == 'white' ? '♔ '.magenta : '♚ '.yellow
+    color == 'white' ? '♔ '.magenta : '♚ '.yellow
   end
 end

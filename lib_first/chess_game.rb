@@ -68,7 +68,7 @@ class ChessGame
   def make_move(from_square, to_square, player)
     piece = @board.fetch_piece(from_square)
     piece.square = to_square
-    player.score << @board.fetch_piece(to_square).unicode if @board.piece?(to_square)
+    player.score << @board.fetch_piece(to_square).unicode if @board.piece(to_square)
     if castle_move?(piece, from_square, to_square)
       castle(from_square, to_square, piece)
     elsif piece.is_a?(Pawn) && piece.en_passant == [to_square]

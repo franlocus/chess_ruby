@@ -23,8 +23,7 @@ class Piece
   end
 
   def upward_moves(board, preventive_move = false,  upward = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first - 1, position.last])
       if encounter_piece?(board, position)
         upward << position if preventive_move || can_capture?(board, position)
 
@@ -37,8 +36,7 @@ class Piece
   end
 
   def rightward_moves(board, preventive_move = false,  rightward = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first, position.last + 1])
       if encounter_piece?(board, position)
         rightward << position if preventive_move || can_capture?(board, position)
 
@@ -51,8 +49,7 @@ class Piece
   end
 
   def downward_moves(board, preventive_move = false,  downward = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first + 1, position.last])
       if encounter_piece?(board, position)
         downward << position if preventive_move || can_capture?(board, position)
 
@@ -65,8 +62,7 @@ class Piece
   end
 
   def leftward_moves(board, preventive_move = false,  leftward = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first, position.last - 1])
       if encounter_piece?(board, position)
         leftward << position if preventive_move || can_capture?(board, position)
 
@@ -79,8 +75,7 @@ class Piece
   end
 
   def upright_moves(board, preventive_move = false,  upright = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first - 1, position.last + 1])
       if encounter_piece?(board, position)
         upright << position if preventive_move || can_capture?(board, position)
 
@@ -93,8 +88,7 @@ class Piece
   end
 
   def downright_moves(board, preventive_move = false,  downright = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first + 1, position.last + 1])
       if encounter_piece?(board, position)
         downright << position if preventive_move || can_capture?(board, position)
 
@@ -107,8 +101,7 @@ class Piece
   end
 
   def upleft_moves(board, preventive_move = false,  upleft = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first - 1, position.last - 1])
       if encounter_piece?(board, position)
         upleft << position if preventive_move || can_capture?(board, position)
 
@@ -121,8 +114,7 @@ class Piece
   end
 
   def downleft_moves(board, preventive_move = false,  downleft = [], position = square)
-    until outside_board?(position)
-      position = [position.first - 1, position.last]
+    while within_board?(position = [position.first + 1, position.last - 1])
       if encounter_piece?(board, position)
         downleft << position if preventive_move || can_capture?(board, position)
 
@@ -134,7 +126,7 @@ class Piece
     downleft
   end
 
-  def outside_board?(coordinates)
-    coordinates.any? { |n| !n.between?(0, 7) }
+  def within_board?(coordinates)
+    coordinates.all? { |n| n.between?(0, 7) }
   end
 end

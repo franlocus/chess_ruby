@@ -26,7 +26,7 @@ class King < Piece
   def valid_move?(move, board, preventive_move)
     within_board?(move) &&
       !board.defended_squares_by(@color == 'white' ? 'black' : 'white').include?(move) &&
-      ((!board.piece?(move) || board.enemy_piece?(move,  @color)) || (preventive_move && board.piece?(move)))
+      ((!board.piece(move) || board.enemy_piece?(move,  @color)) || (preventive_move && board.piece(move)))
   end
 
   def xrayed(board, checker)

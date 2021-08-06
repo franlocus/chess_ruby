@@ -10,6 +10,7 @@ class Queen < Piece
               'rightward_moves' => rightward_moves(board, preventive_move),
               'downward_moves' => downward_moves(board, preventive_move),
               'leftward_moves' => leftward_moves(board, preventive_move) }
+              puts moves
     hash_format ? moves : moves.values.flatten(1)
   end
 

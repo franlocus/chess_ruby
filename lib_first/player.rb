@@ -25,7 +25,7 @@ class Player
       select_forced_piece(forced_pieces)
     else
       while (selected_piece = input_piece)
-        unless board.enemy_piece?(selected_piece, @color) || !board.piece?(selected_piece)
+        unless board.enemy_piece?(selected_piece, @color) || !board.piece(selected_piece)
           return @last_turn_from = selected_piece
 
         end

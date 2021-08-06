@@ -15,8 +15,8 @@ class Piece
       cursor = [cursor.first - 1, cursor.last]
       return upward unless within_board?(cursor)
 
-      return upward << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return upward if board.piece?(cursor)
+      return upward << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return upward if board.piece(cursor)
 
       upward << cursor
     end
@@ -27,8 +27,8 @@ class Piece
       cursor = [cursor.first, cursor.last + 1]
       return rightward unless within_board?(cursor)
 
-      return rightward << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return rightward if board.piece?(cursor)
+      return rightward << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return rightward if board.piece(cursor)
 
       rightward << cursor
     end
@@ -39,8 +39,8 @@ class Piece
       cursor = [cursor.first + 1, cursor.last]
       return downward unless within_board?(cursor)
 
-      return downward << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return downward if board.piece?(cursor)
+      return downward << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return downward if board.piece(cursor)
 
       downward << cursor
     end
@@ -51,8 +51,8 @@ class Piece
       cursor = [cursor.first, cursor.last - 1]
       return leftward unless within_board?(cursor)
 
-      return leftward << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return leftward if board.piece?(cursor)
+      return leftward << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return leftward if board.piece(cursor)
 
       leftward << cursor
     end
@@ -63,8 +63,8 @@ class Piece
       cursor = [cursor.first - 1, cursor.last + 1]
       return upright unless within_board?(cursor)
 
-      return upright << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return upright if board.piece?(cursor)
+      return upright << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return upright if board.piece(cursor)
 
       upright << cursor
     end
@@ -75,8 +75,8 @@ class Piece
       cursor = [cursor.first + 1, cursor.last + 1]
       return downright unless within_board?(cursor)
 
-      return downright << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return downright if board.piece?(cursor)
+      return downright << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return downright if board.piece(cursor)
 
       downright << cursor
     end
@@ -87,8 +87,8 @@ class Piece
       cursor = [cursor.first - 1, cursor.last - 1]
       return upleft unless within_board?(cursor)
 
-      return upleft << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return upleft if board.piece?(cursor)
+      return upleft << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return upleft if board.piece(cursor)
 
       upleft << cursor
     end
@@ -99,8 +99,8 @@ class Piece
       cursor = [cursor.first + 1, cursor.last - 1]
       return downleft unless within_board?(cursor)
 
-      return downleft << cursor if board.enemy_piece?(cursor, color) || (board.piece?(cursor) && preventive_move)
-      return downleft if board.piece?(cursor)
+      return downleft << cursor if board.enemy_piece?(cursor, color) || (board.piece(cursor) && preventive_move)
+      return downleft if board.piece(cursor)
 
       downleft << cursor
     end

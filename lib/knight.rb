@@ -7,11 +7,18 @@ class Knight < Piece
   end
 
   def valid_move?(move, board, preventive_move)
-    within_board?(move) &&
-      ((!board.piece?(move) || board.enemy_piece?(move, color)) || (board.piece?(move) && preventive_move))
+    return false unless within_board?(move)
+
+    if encounter_piece?(board, move)
+      preventive_move || can_capture?(board, move)
+    else
+      true # it's a free square
+    end
   end
-  
+
   def unicode
     @color == "white" ? "♘ ".magenta : "♞ ".yellow 
   end
 end
+
+# ((!board.piece(move) || can_capture?(board, move)) || (board.piece(move) && preventive_move))
