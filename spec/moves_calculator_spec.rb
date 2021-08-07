@@ -15,12 +15,16 @@ describe MovesCalculator do
       expect(recopiled_legal_moves.flatten(1)).to match_array([[5, 0], [5, 2], [5, 5], [5, 7]]
       )
     end
+    matcher :every_piece_has_moves do
+      match { |array_2d| array_2d.all? { |array| !array.empty? } }
+    end
     it 'All white mayors pieces have certain moves initially if white pawns are removed' do
       subject.board.squares[6].map! { nil }
       recopiled_legal_moves = []
       8.times { |i| recopiled_legal_moves << subject.legal_moves([7, i - 1]) }
       expect(recopiled_legal_moves.flatten(1)).to match_array([[6, 7], [5, 7], [4, 7], [3, 7], [2, 7], [1, 7], [6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0], [5, 0], [5, 2], [6, 3], [6, 3], [5, 4], [4, 5], [3, 6], [2, 7], [6, 1], [5, 0], [6, 4], [5, 5], [4, 6], [3, 7], [6, 2], [5, 1], [4, 0], [6, 3], [5, 3], [4, 3], [3, 3], [2, 3], [1, 3], [6, 5], [6, 4], [6, 3], [6, 6], [5, 7], [6, 4], [5, 3], [4, 2], [3, 1], [2, 0], [6, 4], [5, 5], [5, 7]]
       )
+      expect(recopiled_legal_moves).to every_piece_has_moves
     end
   end
   context 'pawns movements' do
