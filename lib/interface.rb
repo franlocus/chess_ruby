@@ -58,14 +58,14 @@ class Interface
 
   def prompt_valid_input
     puts "\nPlease enter a square in algebraic notation:".cyan
-    validate_algebraic(gets.chomp) || try_again
+    validate_algebraic(gets.chomp) || try_again_prompt
   end
 
   def validate_algebraic(input)
     return input if input.match?(/^[a-h][1-8]$/)
   end
 
-  def try_again
+  def try_again_prompt
     puts "Sorry, input error! Please introduce a valid algebraic notation, eg. 'a1' or 'b5'".red
     prompt_valid_input
   end
