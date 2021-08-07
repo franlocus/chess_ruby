@@ -19,30 +19,31 @@ describe Interface do
       end
     end
   end
-  describe '#player_input_piece' do
-    context 'valid input' do
+  describe '#player_select_piece' do
+    context 'valid input from white player' do
       before do
         allow(subject).to receive(:puts)
-        valid_input = 'a1'
+        valid_input = 'a2'
         allow(subject).to receive(:gets).and_return(valid_input)
       end
       it 'return algebraic input to coordinates' do
-        expect(subject.player_input_piece).to eq([7, 0])
-      end
-    end
-    context 'invalid input twice' do
-      before do
-        allow(subject).to receive(:puts)
-        invalid_format_input = 'a12'
-        valid_input = 'a1'
-        allow(subject).to receive(:gets).and_return(invalid_format_input, invalid_format_input, valid_input)
-      end
-      it 'return algebraic input to coordinates' do
-        expect(subject).to receive(:puts).exactly(5) # prompt, try_again, prompt, error select_piece, prompt
-        expect(subject.player_input_piece).to eq([7, 0])
+        expect(subject.player_select_piece(true)).to eq([6, 0])
       end
     end
   end
+
+  describe '#verify_valid_piece' do
+    context 'invalid input twice' do
+      before do
+        allow(subject).to receive(:puts)
+      end
+      it 'returns valid coordinates' do
+        expect(subject.verify_valid_piece('a7', false)).to eq([1, 0])
+        expect(subject.verify_valid_piece('a2', true)).to eq([6, 0])
+      end
+    end
+  end
+
   describe '#prompt_valid input' do
     before do
       allow(subject).to receive(:puts)
@@ -67,6 +68,19 @@ describe Interface do
         expect(subject).to receive(:gets).twice
         expect(subject).to receive(:puts).exactly(3) # Intructions, error, intructions
         subject.prompt_valid_input
+      end
+    end
+  end
+  describe '#player_select_move' do
+    context 'invalid input once, then valid input' do
+      before do
+        allow(subject).to receive(:puts)
+        invalid_input = 'a8'
+        valid_input = 'a3'
+        allow(subject).to receive(:gets).and_return(invalid_input, valid_input)
+      end
+      it 'return the move selected' do
+        expect(subject.player_select_move([6, 0])).to eq([5, 0])
       end
     end
   end

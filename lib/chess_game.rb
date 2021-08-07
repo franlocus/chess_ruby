@@ -32,34 +32,12 @@ class ChessGame
   def turn_order
     loop do
       interface.display_board
-      piece_from = player_select_piece
-      piece_to = interface.player_input_move(piece_from)
+      piece_from = interface.player_select_piece(current_player.is_white)
+      piece_to = interface.player_select_move(piece_from)
       moves_controller.make_move(piece_from, piece_to)
       # break if conditions win
       switch_current_player
     end
-  end
-
-  def player_select_piece
-    verify_piece(interface.player_input_piece)
-  end
-
-  def player_select_move
-    
-  end
-
-  def verify_piece(piece_coordinates)
-    return piece_coordinates if moves_calculator.can_move?(piece_coordinates)
-
-    player_select_piece
-  end
-
-  def validate_piece(coordinates, current_player)
-    piece = @board.fetch_piece(coordinates)
-    return false if piece.nil?
-    true
-    # TODO: fix to work with is_white 
-    (piece.is_white == current_player.is_white) # && @moves_calculator.legal_moves(piece.class, coordinates)
   end
 
   def game_over

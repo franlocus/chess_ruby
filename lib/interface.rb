@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Interface
+  attr_reader :moves_calculator
+
   def initialize(board)
     @board = board
     @moves_calculator = MovesCalculator.new(@board)
@@ -15,12 +17,47 @@ class Interface
     end
   end
 
-  def player_input_piece
-    to_coordinates(prompt_valid_input)
+  def player_select_move(coordinates)
+    moves = moves_calculator.legal_moves(coordinates)
+    puts "The piece can move to:\n#{to_algebraic(moves).green}"
+    verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates)
+  end
+
+  def verify_valid_move(selected_move, moves)
+    # TODO: review the use of [move]
+    return selected_move if moves.include?(selected_move) || [moves].include?(selected_move)
+  end
+
+  def try_again_input_move(coordinates)
+    puts 'Invalid move! Please try again'.red
+    player_select_move(coordinates)
+  end
+
+  def player_select_piece(is_white)
+    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
+  end
+
+  def verify_valid_piece(algebraic, is_white)
+    coordinates = to_coordinates(algebraic)
+    return coordinates if piece_with_player_color?(coordinates, is_white) && piece_can_move?(coordinates)
+  end
+
+  def piece_with_player_color?(coordinates, is_white)
+    piece = @board.piece(coordinates)
+    return true unless piece.nil? || piece.is_white != is_white
+  end
+
+  def piece_can_move?(coordinates)
+    !moves_calculator.legal_moves(coordinates).empty?
+  end
+
+  def try_again_input_piece(is_white)
+    puts "Sorry, the piece can't move or is not available(is enemy or a blank square)".red
+    player_select_piece(is_white)
   end
 
   def prompt_valid_input
-    puts "\nPlayer #color please enter the piece you would like to move:".cyan
+    puts "\nPlease enter a square in algebraic notation:".cyan
     validate_algebraic(gets.chomp) || try_again
   end
 
@@ -36,6 +73,14 @@ class Interface
   def to_coordinates(algebraic)
     algebraic = algebraic.chars
     [(algebraic.last.to_i - 8).abs, algebraic.first.ord - 97]
+  end
+
+  def to_algebraic(coordinates)
+    if coordinates.any?(Array)
+      coordinates.map { |move| to_algebraic(move) }.join(' ')
+    else
+      (coordinates.last + 97).chr + (coordinates.first - 8).abs.to_s
+    end
   end
 
   def display_board
