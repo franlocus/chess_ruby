@@ -27,10 +27,4 @@ describe ChessGame do
       expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).is_white }.from(false).to(true)
     end
   end
-
-  #describe '#turn_order' do
-  #  xit '' do
-  #    
-  #  end
-  #end
 end
