@@ -12,6 +12,6 @@ class Bishop < Piece
   end
 
   def unicode
-    @color == 'white' ? '♗ '.magenta : '♝ '.yellow
+   is_white ? '♗ '.magenta : '♝ '.yellow
   end
 end

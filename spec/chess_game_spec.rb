@@ -6,7 +6,7 @@ require_relative '../lib/interface'
 
 describe ChessGame do
   let(:board) { Board.new }
-  let(:subject) { described_class.new(Interface.new(board), Player.new('white'), Player.new('black'), MovesController.new, board) }
+  let(:subject) { described_class.new(Interface.new(board), Player.new(true), Player.new(false), MovesController.new, board) }
   describe '#initialize' do
     it 'init board and players' do
       interface = subject.instance_variable_get(:@interface)
@@ -14,17 +14,17 @@ describe ChessGame do
       player_black = subject.instance_variable_get(:@player_black)
       expect(interface).to be_a(Interface)
       expect(player_white).to be_a(Player)
-      expect(player_white.color).to eq('white')
+      expect(player_white.is_white).to be_truthy
       expect(player_black).to be_a(Player)
-      expect(player_black.color).to eq('black')
+      expect(player_black.is_white).to be_falsy
     end
   end
 
   describe '#switch_current_player' do
     it 'change current player according' do
       subject.switch_current_player # make current = white
-      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).color }.from('white').to('black')
-      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).color }.from('black').to('white')
+      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).is_white }.from(true).to(false)
+      expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).is_white }.from(false).to(true)
     end
   end
 

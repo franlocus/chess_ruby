@@ -2,10 +2,10 @@
 
 class Piece
   attr_accessor :square, :moved
-  attr_reader :color
+  attr_reader :is_white
 
-  def initialize(color, square)
-    @color = color
+  def initialize(is_white, square)
+    @is_white = is_white
     @square = square
     @moved = false
   end
@@ -19,7 +19,7 @@ class Piece
   end
 
   def can_capture?(board, position)
-    board.piece(position).color != color
+    board.piece(position).is_white != is_white
   end
 
   def upward_moves(board, preventive_move = false,  upward = [], position = square)

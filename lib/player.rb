@@ -2,10 +2,10 @@
 
 class Player
   attr_accessor :score, :played_moves
-  attr_reader :color
+  attr_reader :is_white
 
-  def initialize(color)
-    @color = color
+  def initialize(is_white)
+    @is_white = is_white
     @score = []
     @played_moves = []
   end

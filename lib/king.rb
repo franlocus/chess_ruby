@@ -3,8 +3,8 @@
 class King < Piece
   attr_accessor :right_rook, :left_rook
 
-  def initialize(square, color, left_rook, right_rook)
-    super(square, color)
+  def initialize(square, is_white, left_rook, right_rook)
+    super(square, is_white)
     @left_rook = left_rook
     @right_rook = right_rook
   end
@@ -51,7 +51,7 @@ class King < Piece
 
   def castle_moves(board)
     castle_moves = []
-    if color == 'white'
+    if is_white
       castle_moves << [7, 6] if can_short_castle?(board)
       castle_moves << [7, 2] if can_long_castle?(board)
     else
@@ -62,7 +62,7 @@ class King < Piece
   end
 
   def can_short_castle?(board)
-    if color == 'white'
+    if is_white
       short_castle?(board, 7, 'black', [[7, 5], [7, 6]], right_rook)
     else
       short_castle?(board, 0, 'white', [[0, 5], [0, 6]], right_rook)
@@ -70,7 +70,7 @@ class King < Piece
   end
 
   def can_long_castle?(board)
-    if color == 'white'
+    if is_white
       long_castle?(board, 7, 'black', [[7, 1], [7, 2], [7, 3]], left_rook)
     else
       long_castle?(board, 0, 'white', [[0, 1], [0, 2], [0, 3]], left_rook)
@@ -92,6 +92,6 @@ class King < Piece
   end
   
   def unicode
-    color == 'white' ? '♔ '.magenta : '♚ '.yellow
+    is_white ? '♔ '.magenta : '♚ '.yellow
   end
 end

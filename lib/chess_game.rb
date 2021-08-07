@@ -57,8 +57,9 @@ class ChessGame
   def validate_piece(coordinates, current_player)
     piece = @board.fetch_piece(coordinates)
     return false if piece.nil?
-    
-    (piece.color == current_player.color) # && @moves_calculator.legal_moves(piece.class, coordinates)
+    true
+    # TODO: fix to work with is_white 
+    (piece.is_white == current_player.is_white) # && @moves_calculator.legal_moves(piece.class, coordinates)
   end
 
   def game_over
