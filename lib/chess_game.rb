@@ -30,12 +30,15 @@ class ChessGame
   end
 
   def turn_order
+  # check game_state: king in check, checkmate, stalemate
+  # normal_turn || forced_turn
     loop do
       interface.display_board
       piece_from = interface.player_select_piece(current_player.is_white)
       piece_to = interface.player_select_move(piece_from)
-      moves_controller.make_move(piece_from, piece_to)
+      moves_controller.make_move(piece_from, piece_to, current_player)
       # break if conditions win
+    
       switch_current_player
     end
   end

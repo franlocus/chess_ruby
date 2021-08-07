@@ -12,7 +12,7 @@ class Game
     @interface = Interface.new(@board)
     @player_white = Player.new(true)
     @player_black = Player.new(false)
-    @moves_controller = MovesController.new
+    @moves_controller = MovesController.new(@board)
   end
 
   def play
