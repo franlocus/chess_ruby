@@ -10,10 +10,11 @@ require_relative 'pawn'
 require_relative 'king'
 
 class Board
-  attr_accessor :squares
+  attr_accessor :squares, :history_moves
 
   def initialize
     @squares = Array.new(8) { Array.new(8, nil) }
+    @history_moves = []
     setup_pieces
   end
 
