@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class MovesController
-  attr_reader :board
+  attr_reader :board, :interface
 
-  def initialize(board)
+  def initialize(board, interface)
     @board = board
+    @interface = interface
   end
 
   def make_move(from_square, to_square, player)
@@ -12,9 +13,9 @@ class MovesController
     update_player_score(player, to_square)
 
     if castle_move?(piece, to_square)
-      castle(king, from_square, to_square)
-    elsif piece.is_a?(Pawn) && piece.en_passant == [to_square]
-      en_passant(from_square, to_square, piece, player)
+      castle(piece, from_square, to_square)
+    #elsif piece.is_a?(Pawn) && piece.en_passant == [to_square]
+    #  en_passant(from_square, to_square, piece, player)
     elsif piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
       promote_pawn(from_square, to_square, player)
     else
@@ -33,14 +34,18 @@ class MovesController
     player.score << board.piece(to_square).unicode if board.piece(to_square)
   end
 
-  def promote_pawn(from_square, to_square, player, color = player.color)
-    @board.squares[from_square.first][from_square.last] = nil
-    @board.squares[to_square.first][to_square.last] = case player.promote_piece
-                                                      when '1' then Queen.new(to_square, color)
-                                                      when '2' then Rook.new(to_square, color)
-                                                      when '3' then Bishop.new(to_square, color)
-                                                      else Knight.new(to_square, color)
-                                                      end
+  def promote_pawn(from_square, to_square, player)
+    board.squares[from_square.first][from_square.last] = nil
+    board.squares[to_square.first][to_square.last] = piece_to_promote(to_square, player.is_white)
+  end
+
+  def piece_to_promote(to_square, is_white)
+    case interface.player_select_promotion
+    when 1 then Queen.new(is_white, to_square)
+    when 2 then Rook.new(is_white, to_square)
+    when 3 then Bishop.new(is_white, to_square)
+    when 4 then Knight.new(is_white, to_square)
+    end
   end
 
   def castle_move?(piece, to_square)

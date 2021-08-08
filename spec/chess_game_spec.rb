@@ -6,7 +6,8 @@ require_relative '../lib/interface'
 
 describe ChessGame do
   let(:board) { Board.new }
-  let(:subject) { described_class.new(Interface.new(board), Player.new(true), Player.new(false), MovesController.new(board), board) }
+  let(:interface) {Interface.new(board)}
+  let(:subject) { described_class.new(interface, Player.new(true), Player.new(false), MovesController.new(board, interface), board) }
   describe '#initialize' do
     it 'init board and players' do
       interface = subject.instance_variable_get(:@interface)
