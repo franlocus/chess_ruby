@@ -11,11 +11,10 @@ class MovesController
   def make_move(from_square, to_square, player)
     piece = board.piece(from_square)
     update_player_score(player, to_square)
-
     if castle_move?(piece, to_square)
       castle(piece, from_square, to_square)
-    #elsif piece.is_a?(Pawn) && piece.en_passant == [to_square]
-    #  en_passant(from_square, to_square, piece, player)
+    elsif piece.is_a?(Pawn) && piece.en_passant == to_square
+      en_passant(from_square, to_square, piece, player)
     elsif piece.is_a?(Pawn) && [0, 7].include?(to_square.first)
       promote_pawn(from_square, to_square, player)
     else
@@ -24,8 +23,17 @@ class MovesController
   end
 
   def move_piece!(from_square, to_square, piece)
+    update_board(from_square, to_square, piece)
+    update_piece(piece, to_square)
+  end
+
+  def update_board(from_square, to_square, piece)
     board.squares[from_square.first][from_square.last] = nil
     board.squares[to_square.first][to_square.last] = piece
+    board.history_moves << [from_square, to_square]
+  end
+
+  def update_piece(piece, to_square)
     piece.moved = true
     piece.square = to_square
   end
@@ -67,10 +75,9 @@ class MovesController
   end
 
   def en_passant(from_square, to_square, piece, player)
-    @board.move_piece!(from_square, to_square, piece)
-    enemy_player = player.color == 'white' ? @player_black : @player_white
-    eaten_pawn = @board.fetch_piece(enemy_player.last_turn_to)
-    player.score << eaten_pawn.unicode
-    @board.squares.map! { |row| row.map! { |square| square == eaten_pawn ? nil : square } }
+    square_pawn_to_be_eaten = board.history_moves[-1].last
+    move_piece!(from_square, to_square, piece)
+    update_player_score(player, square_pawn_to_be_eaten)
+    update_board(from_square, square_pawn_to_be_eaten, nil) # delete pawn eaten
   end
 end

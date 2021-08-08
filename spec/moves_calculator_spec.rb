@@ -2,9 +2,12 @@
 
 require_relative '../lib/moves_calculator'
 require_relative '../lib/board'
+require_relative '../lib/moves_controller'
+require_relative '../lib/interface'
 
 describe MovesCalculator do
-  let(:subject) { described_class.new(Board.new) }
+  let(:board) { Board.new }
+  let(:subject) { described_class.new(board) }
   describe '#legal_moves' do
     it 'take coordinates in argument and output legal moves' do
       expect(subject.legal_moves([7, 3])).not_to be_nil
@@ -28,7 +31,11 @@ describe MovesCalculator do
     end
   end
   context 'pawns movements' do
-    let(:subject) { described_class.new(Board.new) }
+    let(:subject) { described_class.new(board) }
+    let(:player_white) { Player.new(true) }
+    let(:player_black) { Player.new(false) }
+    let(:interface) { Interface.new(board) }
+    let(:moves_controller) { MovesController.new(board, interface) }
     # white
     it 'returns 2 pawns\'s moves from d2' do
       expect(subject.legal_moves([6, 3])).to eq([[5, 3], [4, 3]])
@@ -45,6 +52,12 @@ describe MovesCalculator do
       subject.board.squares[5][4] = subject.board.squares[0][3]
       subject.board.squares[5][6] = subject.board.squares[0][2]
       expect(subject.legal_moves([6, 5])).to match_array([[4, 5], [5, 4], [5, 5], [5, 6]])
+    end
+    it 'can move en passant' do
+      board = subject.board
+      moves_controller.make_move([6, 4], [3, 4], player_white)
+      moves_controller.make_move([1, 3], [3, 3], player_black)
+      expect(subject.legal_moves([3, 4])).to match_array([[2, 3], [2, 4]])
     end
     # black
     it 'returns 2 pawns\'s moves from d7' do
