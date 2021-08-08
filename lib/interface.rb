@@ -83,6 +83,16 @@ class Interface
     end
   end
 
+  def player_select_promotion
+    puts "Pawn promotion! Please choose the new piece:\n[1] - Queen\n[2] - Rook\n[3] - Bishop\n[4] - Knight".cyan
+    loop do
+      input = gets.chomp
+      return input.to_i if input.match?(/[1-4]$/)
+
+      puts 'Input error, please introduce a valid option: 1, 2, 3, 4'.red
+    end
+  end
+
   def display_board
     @board.squares.each_with_index do |row, idx_row|
       print (idx_row - 8).abs, ' '
