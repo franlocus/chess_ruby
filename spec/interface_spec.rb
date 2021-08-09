@@ -32,15 +32,14 @@ describe Interface do
     end
   end
   describe '#player_select_move' do
-    context 'invalid input once, then valid input' do
+    context 'input once valid input' do
       before do
         allow(subject).to receive(:puts)
-        invalid_input = 'a8'
         valid_input = 'a3'
-        allow(subject).to receive(:gets).and_return(invalid_input, valid_input)
+        allow(subject).to receive(:gets).and_return(valid_input)
       end
       it 'return the move selected' do
-        expect(subject.player_select_move([6, 0])).to eq([5, 0])
+        expect(subject.player_select_move([6, 0], true)).to eq([5, 0])
       end
     end
   end
