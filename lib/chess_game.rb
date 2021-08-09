@@ -24,7 +24,7 @@ class ChessGame
   # private after all test
 
   def new_game
-    @current_player || player_white
+    @current_player ||= player_white
     turn_order
     game_over
   end
@@ -33,7 +33,9 @@ class ChessGame
   # check game_state: king in check, checkmate, stalemate
   # normal_turn || forced_turn
     loop do
+      print player_black.score, "\n"
       interface.display_board
+      print player_white.score
       piece_from = interface.player_select_piece(current_player.is_white)
       piece_to = interface.player_select_move(piece_from)
       moves_controller.make_move(piece_from, piece_to, current_player)

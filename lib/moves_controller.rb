@@ -17,7 +17,7 @@ class MovesController
   def determine_move_to_execute(from_square, to_square, player, piece)
     if castle_move?(piece, to_square)
       castle(piece, from_square, to_square)
-    elsif en_passan_move?(piece, to_square)
+    elsif en_passant_move?(piece, to_square)
       en_passant(from_square, to_square, piece, player)
     elsif pawn_promotion?(piece, to_square)
       promote_pawn(from_square, to_square, player)
@@ -32,8 +32,8 @@ class MovesController
   end
 
   def update_board(from_square, to_square, piece)
-    board.squares[from_square.first][from_square.last] = nil
-    board.squares[to_square.first][to_square.last] = piece
+    board.delete_piece(from_square)
+    board.relocate_piece(to_square, piece)
     board.history_moves << [from_square, to_square]
   end
 
@@ -64,15 +64,15 @@ class MovesController
     move_piece!(rook.square, rook_new_square, rook)
   end
 
-  def en_passan_move?(piece, to_square)
-    piece.is_a?(Pawn) && piece.en_passant == to_square
+  def en_passant_move?(piece, to_square)
+    piece.is_a?(Pawn) && piece.en_passant == [to_square]
   end
 
   def en_passant(from_square, to_square, piece, player)
-    square_pawn_to_be_eaten = board.history_moves[-1].last
+    square_of_pawn_to_be_eaten = board.history_moves[-1].last
     move_piece!(from_square, to_square, piece)
-    update_player_score(player, square_pawn_to_be_eaten)
-    update_board(from_square, square_pawn_to_be_eaten, nil) # delete pawn eaten
+    update_player_score(player, square_of_pawn_to_be_eaten)
+    board.delete_piece(square_of_pawn_to_be_eaten)
   end
 
   def pawn_promotion?(piece, to_square)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Interface
-  attr_reader :moves_calculator
+  attr_reader :moves_calculator, :board
 
   def initialize(board)
     @board = board
@@ -94,7 +94,7 @@ class Interface
   end
 
   def display_board
-    @board.squares.each_with_index do |row, idx_row|
+    board.squares.each_with_index do |row, idx_row|
       print (idx_row - 8).abs, ' '
       row.each_with_index do |square, idx_square|
         print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray

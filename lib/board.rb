@@ -48,16 +48,19 @@ class Board
   end
 
   def pawns(is_white, row)
-    @squares[row].map!.with_index { |_, idx| Pawn.new(is_white, [row, idx]) }
-  end
-
-  def player_piece?(coordinates, player_color_is_white)
-    selected_piece = squares.flatten.find { |square| square.y == coordinates[0] && square.x == coordinates[1] }.piece
-    selected_piece.is_white == player_color_is_white unless selected_piece.nil?
+    squares[row].map!.with_index { |_, idx| Pawn.new(is_white, [row, idx]) }
   end
 
   def piece(coordinates)
     squares[coordinates.first][coordinates.last]
+  end
+
+  def delete_piece(coordinates)
+    squares[coordinates.first][coordinates.last] = nil
+  end
+
+  def relocate_piece(coordinates, piece)
+    squares[coordinates.first][coordinates.last] = piece
   end
 end
 

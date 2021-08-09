@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require_relative '../lib/moves_calculator'
 require_relative '../lib/moves_controller'
 require_relative '../lib/board'
 require_relative '../lib/interface'
+require_relative '../lib/player'
+require_relative '../lib/colorize'
 
 describe MovesController do
   let(:board) { Board.new }
@@ -30,13 +33,14 @@ describe MovesController do
         subject.make_move([6, 4], [3, 4], player_white)
         subject.make_move([1, 3], [3, 3], player_black)
         pawn_capturing = board.piece([3, 4])
-        pawn_capturing.instance_variable_set(:@en_passant, [2, 3])
+        pawn_capturing.instance_variable_set(:@en_passant, [[2, 3]])
         subject.make_move([3, 4], [2, 3], player_white)
         expect(pawn_capturing).to satisfy { |piece| be_a(Pawn) && (piece.square == [2, 3])} 
         score_after = player_white.score
         expect(score_before).not_to eq(score_after)
         square_eaten_pawn = board.piece([3, 3])
         expect(square_eaten_pawn).to be_nil
+        
       end
     end
 
