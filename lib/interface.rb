@@ -17,8 +17,32 @@ class Interface
     end
   end
 
-  def player_select_move(coordinates)
-    moves = moves_calculator.legal_moves(coordinates)
+  def player_select_piece(is_white)
+    puts is_white ? 'White turn'.underline : 'Black turn'.underline
+    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
+  end
+
+  def verify_valid_piece(algebraic, is_white)
+    coordinates = to_coordinates(algebraic)
+    return coordinates if piece_with_player_color?(coordinates, is_white) && piece_can_move?(coordinates, is_white)
+  end
+
+  def piece_with_player_color?(coordinates, is_white)
+    piece = @board.piece(coordinates)
+    return true unless piece.nil? || piece.is_white != is_white
+  end
+
+  def piece_can_move?(coordinates, is_white)
+    !moves_calculator.legal_moves(coordinates, is_white).empty?
+  end
+
+  def try_again_input_piece(is_white)
+    puts "Sorry, the piece can't move or is not available(is enemy or a blank square)".red
+    player_select_piece(is_white)
+  end
+
+  def player_select_move(coordinates, is_white)
+    moves = moves_calculator.legal_moves(coordinates, is_white)
     puts "The piece can move to:\n#{to_algebraic(moves).green}"
     verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates)
   end
@@ -33,28 +57,9 @@ class Interface
     player_select_move(coordinates)
   end
 
-  def player_select_piece(is_white)
-    puts is_white ? 'White turn'.underline : 'Black turn'.underline
-    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
-  end
-
-  def verify_valid_piece(algebraic, is_white)
-    coordinates = to_coordinates(algebraic)
-    return coordinates if piece_with_player_color?(coordinates, is_white) && piece_can_move?(coordinates)
-  end
-
-  def piece_with_player_color?(coordinates, is_white)
-    piece = @board.piece(coordinates)
-    return true unless piece.nil? || piece.is_white != is_white
-  end
-
-  def piece_can_move?(coordinates)
-    !moves_calculator.legal_moves(coordinates).empty?
-  end
-
-  def try_again_input_piece(is_white)
-    puts "Sorry, the piece can't move or is not available(is enemy or a blank square)".red
-    player_select_piece(is_white)
+  def try_again_prompt
+    puts "Sorry, input error! Please introduce a valid algebraic notation, eg. 'a1' or 'b5'".red
+    prompt_valid_input
   end
 
   def prompt_valid_input
@@ -64,11 +69,6 @@ class Interface
 
   def validate_algebraic(input)
     return input if input.match?(/^[a-h][1-8]$/)
-  end
-
-  def try_again_prompt
-    puts "Sorry, input error! Please introduce a valid algebraic notation, eg. 'a1' or 'b5'".red
-    prompt_valid_input
   end
 
   def to_coordinates(algebraic)

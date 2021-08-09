@@ -31,7 +31,7 @@ class ChessGame
     loop do
       display_score_board
       piece_from = interface.player_select_piece(current_player.is_white)
-      piece_to = interface.player_select_move(piece_from)
+      piece_to = interface.player_select_move(piece_from, current_player.is_white)
       moves_controller.make_move(piece_from, piece_to, current_player)
       # break if conditions win
     
