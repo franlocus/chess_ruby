@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: play_game in main?
-# TODO: initialize interface in main?
-# TODO: initialize board in interface
-
 class ChessGame
   attr_accessor :current_player
   attr_reader :moves_controller, :player_white, :player_black, :interface
@@ -33,9 +29,7 @@ class ChessGame
   # check game_state: king in check, checkmate, stalemate
   # normal_turn || forced_turn
     loop do
-      print player_black.score, "\n"
-      interface.display_board
-      print player_white.score
+      display_score_board
       piece_from = interface.player_select_piece(current_player.is_white)
       piece_to = interface.player_select_move(piece_from)
       moves_controller.make_move(piece_from, piece_to, current_player)
@@ -47,6 +41,15 @@ class ChessGame
 
   def game_over
     
+  end
+
+  def display_score_board
+    puts "────────────────────\n Black score:       \n", player_black.score
+    puts "  ┌────────────────┐"
+    interface.display_board
+    puts '  └────────────────┘'
+    print "   a b c d e f g h \n\n"
+    puts " White score:       \n", player_white.score, '────────────────────'
   end
 
   def switch_current_player

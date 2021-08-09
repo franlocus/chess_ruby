@@ -2,7 +2,7 @@
 
 class Pawn < Piece
   attr_reader :en_passant
-  # TODO: en passant moves
+  
   def moves(board, preventive_move = false, _ = false)
     if is_white
       up_moves(board) + up_diagonals_attack(board, preventive_move) + en_passant_move(board, 1, 3, 2)
