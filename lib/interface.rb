@@ -34,6 +34,7 @@ class Interface
   end
 
   def player_select_piece(is_white)
+    puts is_white ? 'White turn'.underline : 'Black turn'.underline
     verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
   end
 

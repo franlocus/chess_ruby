@@ -10,6 +10,10 @@ describe ChessGame do
   let(:subject) { described_class.new(interface, Player.new(true), Player.new(false), MovesController.new(board, interface), board) }
   describe '#initialize' do
     it 'init board and players' do
+      # output just because love to see it printed <3
+      puts
+      puts subject.display_score_board
+      # #############################################
       interface = subject.instance_variable_get(:@interface)
       player_white = subject.instance_variable_get(:@player_white)
       player_black = subject.instance_variable_get(:@player_black)
@@ -28,4 +32,5 @@ describe ChessGame do
       expect { subject.switch_current_player }.to change { subject.instance_variable_get(:@current_player).is_white }.from(false).to(true)
     end
   end
+
 end

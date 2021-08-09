@@ -45,7 +45,7 @@ class ChessGame
 
   def display_score_board
     puts "────────────────────\n Black score:       \n", player_black.score
-    puts "  ┌────────────────┐"
+    puts '  ┌────────────────┐'
     interface.display_board
     puts '  └────────────────┘'
     print "   a b c d e f g h \n\n"

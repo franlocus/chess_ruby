@@ -87,8 +87,6 @@ describe Interface do
 
   describe '#display_board' do
     before do
-      puts "\n"
-      puts subject.display_board
       allow(subject).to receive(:print)
     end
     it 'print colored chessboard with row number and letters row' do
