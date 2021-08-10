@@ -168,7 +168,7 @@ describe MovesCalculator do
       end
     end
   end
-  context '#under_pin?' do
+  context 'pinned pieces and legal moves' do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
@@ -193,6 +193,45 @@ describe MovesCalculator do
         queen.square = [1, 4]
         pawn = subject.board.squares[6][4]
         expect(subject.under_pin?(pawn, true)).to be_falsy
+      end
+    end
+    describe 'knight is pinned' do
+      it 'returns empty legal moves' do
+        moves_controller.make_move([0, 3], [1, 4], player_black)
+        expect(subject.board.piece([1, 4])).to be_a(Queen)
+        moves_controller.make_move([7, 6], [6, 4], player_white)
+        expect(subject.board.piece([6, 4])).to be_a(Knight)
+
+        expect(subject.legal_moves([6, 4], true)).to be_empty
+      end
+    end
+    describe 'bishop is pinned' do
+      it 'returns empty moves because queen isnt pinning its diagonally' do
+        moves_controller.make_move([0, 3], [1, 4], player_black)
+        expect(subject.board.piece([1, 4])).to be_a(Queen)
+        subject.board.delete_piece([6, 4]) # delete_pawn
+        moves_controller.make_move([7, 2], [5, 4], player_white)
+        expect(subject.board.piece([5, 4])).to be_a(Bishop)
+
+        expect(subject.legal_moves([5, 4], true)).to be_empty
+      end
+      it 'returns legal moves only towards queen pinning diagonally from h4' do
+        moves_controller.make_move([0, 3], [4, 7], player_black)
+        expect(subject.board.piece([4, 7])).to be_a(Queen)
+        moves_controller.make_move([7, 2], [6, 5], player_white)
+        expect(subject.board.piece([6, 5])).to be_a(Bishop)
+        expect(subject.legal_moves([6, 5], true)).to match_array([[5, 6], [4, 7]])
+      end
+    end
+    describe 'queen is pinned' do
+      it 'returns legal moves only towards pinner or king' do
+        moves_controller.make_move([0, 3], [1, 4], player_black)
+        expect(subject.board.piece([1, 4])).to be_a(Queen)
+        subject.board.delete_piece([6, 4]) # delete_pawn
+        moves_controller.make_move([7, 3], [5, 4], player_white)
+        expect(subject.board.piece([5, 4])).to be_a(Queen)
+
+        expect(subject.legal_moves([5, 4], true)).to match_array([[1, 4], [2, 4], [3, 4], [4, 4], [6, 4]])
       end
     end
   end
