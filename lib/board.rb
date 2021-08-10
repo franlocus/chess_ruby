@@ -61,6 +61,11 @@ class Board
 
   def relocate_piece(coordinates, piece)
     squares[coordinates.first][coordinates.last] = piece
+    # be careful, this method do not update piece.square
+  end
+
+  def king(is_white)
+    squares.flatten.find { |piece| piece.is_a?(King) && piece.is_white == is_white }
   end
 end
 
