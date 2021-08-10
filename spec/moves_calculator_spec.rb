@@ -48,6 +48,26 @@ describe MovesCalculator do
       subject.board.squares[4][4] = subject.board.squares[0][3]
       expect(subject.legal_moves([6, 4], true)).to match_array([[5, 4]])
     end
+    it 'returns 1 pawns\'s move from a6 if there is a piece in b7' do
+      moves_controller.make_move([6, 0], [5, 0], player_white)
+      moves_controller.make_move([5, 0], [4, 0], player_white)
+      moves_controller.make_move([4, 0], [3, 0], player_white)
+      moves_controller.make_move([3, 0], [2, 0], player_white)
+      expect(subject.legal_moves([2, 0], true)).to match_array([[1, 1]])
+    end
+    context 'the pawn moves along the A column' do
+      it 'returns 1 up move from a6 if there is not piece at a7, then follow the path' do
+        moves_controller.make_move([6, 0], [5, 0], player_white)
+        moves_controller.make_move([5, 0], [4, 0], player_white)
+        moves_controller.make_move([4, 0], [3, 0], player_white)
+        moves_controller.make_move([3, 0], [2, 0], player_white)
+        subject.board.delete_piece([1, 0])
+        expect(subject.legal_moves([2, 0], true)).to match_array([[1, 0], [1, 1]])
+        moves_controller.make_move([2, 0], [1, 0], player_white)
+        subject.board.delete_piece([0, 1])
+        expect(subject.legal_moves([1, 0], true)).to be_empty
+      end
+    end
     it 'can capture diagonals from f2 if there is an enemy piece in e3 and g3' do
       subject.board.squares[5][4] = subject.board.squares[0][3]
       subject.board.squares[5][6] = subject.board.squares[0][2]
@@ -70,6 +90,19 @@ describe MovesCalculator do
     it 'returns 1 pawns\'s move from e7 if there is a piece in e5' do
       subject.board.squares[3][4] = subject.board.squares[7][3]
       expect(subject.legal_moves([1, 4], false)).to match_array([[2, 4]])
+    end
+    context 'the pawn moves along the A column' do
+      it 'returns 1 down move from a3 if there is not piece at a2, then follow the path' do
+        moves_controller.make_move([1, 0], [2, 0], player_black)
+        moves_controller.make_move([2, 0], [3, 0], player_black)
+        moves_controller.make_move([3, 0], [4, 0], player_black)
+        moves_controller.make_move([4, 0], [5, 0], player_black)
+        subject.board.delete_piece([6, 0])
+        expect(subject.legal_moves([5, 0], false)).to match_array([[6, 0], [6, 1]])
+        moves_controller.make_move([5, 0], [6, 0], player_black)
+        subject.board.delete_piece([7, 1])
+        expect(subject.legal_moves([6, 0], false)).to be_empty
+      end
     end
     it 'can capture diagonals from b7 if there is an enemy piece in a6 and c6' do
       subject.board.squares[2][0] = subject.board.squares[7][0]
@@ -135,7 +168,33 @@ describe MovesCalculator do
       end
     end
   end
+  context '#under_pin?' do
+    let(:subject) { described_class.new(board) }
+    let(:player_white) { Player.new(true) }
+    let(:player_black) { Player.new(false) }
+    let(:interface) { Interface.new(board) }
+    let(:moves_controller) { MovesController.new(board, interface) }
+    describe 'pawn in e2 is pinned because the queen in e7' do
+      it 'returns true' do
+        queen = subject.board.piece([0, 3])
+        subject.board.relocate_piece([1, 4], queen)
+        queen.square = [1, 4]
+        pawn = subject.board.squares[6][4]
+        expect(subject.board.piece([1, 4])).to be_a(Queen)
+        expect(subject.under_pin?(pawn, true)).to be_truthy
+      end
+    end
+    describe 'pawn in e2 is not pinned because the queen in e7 ' do
+      it 'returns false' do
+        queen = subject.board.piece([0, 3])
+        pawn_intercepter = subject.board.piece([1, 3])
+        subject.board.relocate_piece([5, 4], pawn_intercepter)
+        subject.board.relocate_piece([1, 4], queen)
+        queen.square = [1, 4]
+        pawn = subject.board.squares[6][4]
+        expect(subject.under_pin?(pawn, true)).to be_falsy
+      end
+    end
+  end
 end
 
-
-# TODO fix KING MOVEMENTS

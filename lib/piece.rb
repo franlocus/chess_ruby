@@ -11,11 +11,11 @@ class Piece
   end
 
   def moved?
-    @moved
+    moved
   end
 
   def encounter_piece?(board, position)
-    board.piece(position)
+    !!board.piece(position)
   end
 
   def can_capture?(board, position)

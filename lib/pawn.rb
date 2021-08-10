@@ -32,14 +32,6 @@ class Pawn < Piece
 
   def generate_two_moves(is_white)
     vectors = is_white ? [[-1, 0], [-2, 0]] : [[1, 0], [2, 0]]
-    #if is_white
-    #  #[[square[0] - 1, square[1]], [square[0] - 2, square[1]]]
-#
-    #  [[-1, 0], [-2, 0]].map { |y, x| [square[0] + y, square[1] + x] }
-    #else
-    #  #[[square[0] + 1, square[1]], [square[0] + 2, square[1]]]
-    #  [[1, 0], [2, 0]].map { |y, x| [square[0] + y, square[1] + x] }
-    #end
     vectors.map { |y, x| [square[0] + y, square[1] + x] }
   end
 
