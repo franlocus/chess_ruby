@@ -32,10 +32,6 @@ class King < Piece
     end
   end
 
-  def attacked_square?(board, move)
-    board.player_attacked_squares(color == 'white' ? 'black' : 'white').include?(move) 
-  end
-
   def xrayed(board, checker)
     return [] if %w[Pawn Knight].include?(checker.class.to_s)
 
