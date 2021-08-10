@@ -28,7 +28,7 @@ class Interface
   end
 
   def piece_with_player_color?(coordinates, is_white)
-    piece = @board.piece(coordinates)
+    piece = board.piece(coordinates)
     return true unless piece.nil? || piece.is_white != is_white
   end
 
@@ -44,7 +44,7 @@ class Interface
   def player_select_move(coordinates, is_white)
     moves = moves_calculator.legal_moves(coordinates, is_white)
     puts "The piece can move to:\n#{to_algebraic(moves).green}"
-    verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates)
+    verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates, is_white)
   end
 
   def verify_valid_move(selected_move, moves)
@@ -52,9 +52,9 @@ class Interface
     return selected_move if moves.include?(selected_move) || [moves].include?(selected_move)
   end
 
-  def try_again_input_move(coordinates)
+  def try_again_input_move(coordinates, is_white)
     puts 'Invalid move! Please try again'.red
-    player_select_move(coordinates)
+    player_select_move(coordinates, is_white)
   end
 
   def try_again_prompt
