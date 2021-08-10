@@ -30,9 +30,24 @@ class Pawn < Piece
       last_turn_to[1].between?(square[1] - 1, square[1] + 1)
   end
 
+  def generate_two_moves(is_white)
+    vectors = is_white ? [[-1, 0], [-2, 0]] : [[1, 0], [2, 0]]
+    #if is_white
+    #  #[[square[0] - 1, square[1]], [square[0] - 2, square[1]]]
+#
+    #  [[-1, 0], [-2, 0]].map { |y, x| [square[0] + y, square[1] + x] }
+    #else
+    #  #[[square[0] + 1, square[1]], [square[0] + 2, square[1]]]
+    #  [[1, 0], [2, 0]].map { |y, x| [square[0] + y, square[1] + x] }
+    #end
+    vectors.map { |y, x| [square[0] + y, square[1] + x] }
+  end
+
   def up_moves(board)
-    two_moves_up = upward_moves(board).first(2)
-    if moved || encounter_piece?(board, two_moves_up.last)
+    two_moves_up = generate_two_moves(is_white)
+    return [] if board.piece(two_moves_up.first)
+
+    if moved || board.piece(two_moves_up.last)
       two_moves_up.tap(&:pop)
     else
       two_moves_up
@@ -40,8 +55,10 @@ class Pawn < Piece
   end
 
   def down_moves(board)
-    two_moves_down = downward_moves(board).first(2)
-    if moved || encounter_piece?(board, two_moves_down.last)
+    two_moves_down = generate_two_moves(is_white)
+    return [] if board.piece(two_moves_down.first)
+
+    if moved || board.piece(two_moves_down.last)
       two_moves_down.tap(&:pop)
     else
       two_moves_down
@@ -51,6 +68,7 @@ class Pawn < Piece
   def up_diagonals_attack(board, preventive_move)
     up_diagonals = [[square[0] - 1, square[1] - 1], [square[0] - 1, square[1] + 1]]
     up_diagonals.keep_if do |diagonal|
+      within_board?(diagonal) &&
       if encounter_piece?(board, diagonal)
         preventive_move || can_capture?(board, diagonal)
       end
@@ -60,6 +78,7 @@ class Pawn < Piece
   def down_diagonals_attack(board, preventive_move)
     down_diagonals = [[square[0] + 1, square[1] - 1], [square[0] + 1, square[1] + 1]]
     down_diagonals.keep_if do |diagonal|
+      within_board?(diagonal) &&
       if encounter_piece?(board, diagonal)
         preventive_move || can_capture?(board, diagonal)
       end
