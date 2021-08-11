@@ -3,9 +3,11 @@
 require_relative '../lib/interface'
 require_relative '../lib/colorize'
 require_relative '../lib/board'
+require_relative '../lib/moves_calculator'
 
 describe Interface do
-  let(:subject) { described_class.new(Board.new) }
+  let(:board) { Board.new }
+  let(:subject) { described_class.new(board, MovesCalculator.new(board)) }
   describe '#game_type' do
     context 'outputs welcome message with options to start new game or laod game' do
       context 'user input invalid option, then valid' do

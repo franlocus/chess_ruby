@@ -3,9 +3,9 @@
 class Interface
   attr_reader :moves_calculator, :board
 
-  def initialize(board)
+  def initialize(board, moves_calculator)
     @board = board
-    @moves_calculator = MovesCalculator.new(@board)
+    @moves_calculator = moves_calculator
   end
 
   def game_type

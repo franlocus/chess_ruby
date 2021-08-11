@@ -4,12 +4,13 @@ class ChessGame
   attr_accessor :current_player
   attr_reader :moves_controller, :player_white, :player_black, :interface
 
-  def initialize(interface, player_white, player_black, moves_controller, board)
+  def initialize(interface, player_white, player_black, moves_controller, board, moves_calculator)
     @player_white = player_white
     @player_black = player_black
     @interface = interface
     @moves_controller = moves_controller
     @board = board
+    @moves_calculator = moves_calculator
   end
 
   def play_game
@@ -30,16 +31,35 @@ class ChessGame
   # normal_turn || forced_turn
     loop do
       display_score_board
-      piece_from = interface.player_select_piece(current_player.is_white)
-      piece_to = interface.player_select_move(piece_from, current_player.is_white)
-      moves_controller.make_move(piece_from, piece_to, current_player)
-      # break if checkmate || stalemate
-    
+      movement = forced_turn? ? forced_piece_selection : freely_piece_selection
+      moves_controller.make_move(movement.first, movement.last, current_player)
+      # return if checkmate || stalemate
       switch_current_player
     end
   end
 
+  def end_condition?
+    
+  end
+
+  def forced_turn?
+    moves_calculator.under_check?(current_player.is_white)
+  end
+
+  def freely_piece_selection
+    piece_from = interface.player_select_piece(current_player.is_white)
+    piece_to = interface.player_select_move(piece_from, current_player.is_white)
+    [piece_from, piece_to]
+  end
+
+  def forced_piece_selection
+    piece_from = interface.player_select_piece(current_player.is_white)
+    piece_to = interface.player_select_move(piece_from, current_player.is_white)
+    [piece_from, piece_to]
+  end
+
   def game_over
+    # puts current_player WIN
     # checkmate?
     # stalemate?
   end

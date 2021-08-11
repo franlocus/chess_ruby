@@ -10,15 +10,17 @@ require_relative '../lib/colorize'
 class Game
   def initialize
     @board = Board.new
-    @interface = Interface.new(@board)
+    @moves_calculator = MovesCalculator.new(@board)
+    @interface = Interface.new(@board, @moves_calculator)
     @player_white = Player.new(true)
     @player_black = Player.new(false)
     @moves_controller = MovesController.new(@board, @interface)
+    
   end
 
   def play
     # TODO: hash > fix dependecy order
-    ChessGame.new(@interface, @player_white, @player_black, @moves_controller, @board).play_game
+    ChessGame.new(@interface, @player_white, @player_black, @moves_controller, @board, @moves_calculator).play_game
   end
 end
 

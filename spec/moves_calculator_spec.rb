@@ -34,7 +34,7 @@ describe MovesCalculator do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
-    let(:interface) { Interface.new(board) }
+    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
     let(:moves_controller) { MovesController.new(board, interface) }
     # white
     it 'returns 2 pawns\'s moves from d2' do
@@ -172,7 +172,7 @@ describe MovesCalculator do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
-    let(:interface) { Interface.new(board) }
+    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
     let(:moves_controller) { MovesController.new(board, interface) }
     describe 'pawn in e2 is pinned because the queen in e7' do
       it 'returns true' do
