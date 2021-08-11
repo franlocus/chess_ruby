@@ -43,6 +43,7 @@ class Interface
 
   def player_select_move(coordinates, is_white)
     moves = moves_calculator.legal_moves(coordinates, is_white)
+    display_board_with_moves(moves)
     puts "The piece can move to:\n#{to_algebraic(moves).green}"
     verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates, is_white)
   end
@@ -99,6 +100,21 @@ class Interface
       print  (idx_row - 8).abs, ' │' 
       row.each_with_index do |square, idx_square|
         print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
+      end
+      print "│\n"
+    end
+  end
+
+  def display_board_with_moves(moves)
+    # TODO: fix bg red, moves
+    board.squares.each_with_index do |row, idx_row|
+      print  (idx_row - 8).abs, ' │' 
+      row.each_with_index do |square, idx_square|
+        if moves.include?([idx_row, idx_square])
+          print square.unicode(true)
+        else
+          print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
+        end
       end
       print "│\n"
     end

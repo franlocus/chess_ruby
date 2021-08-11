@@ -77,7 +77,11 @@ class Pawn < Piece
     end
   end
   
-  def unicode
-    is_white ? '♙ '.magenta : '♟︎ '.yellow
+  def unicode(printing_moves = false)
+    if printing_moves
+      is_white ? '♙⌝'.magenta.bg_red : '♟︎⌝'.yellow.bg_red
+    else
+      is_white ? '♙ '.magenta : '♟︎ '.yellow
+    end
   end
 end

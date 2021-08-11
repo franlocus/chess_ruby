@@ -70,7 +70,11 @@ class Board
 end
 
 class NilClass
-  def unicode
-    '  '
+  def unicode(printing_moves = false)
+    if printing_moves
+      '◌ '.bg_red
+    else
+      '  '
+    end
   end
 end
