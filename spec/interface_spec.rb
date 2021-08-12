@@ -7,7 +7,9 @@ require_relative '../lib/moves_calculator'
 
 describe Interface do
   let(:board) { Board.new }
-  let(:subject) { described_class.new(board, MovesCalculator.new(board)) }
+  let(:player_white) { Player.new(true) }
+  let(:player_black) { Player.new(false) }
+  let(:subject) { described_class.new(board, MovesCalculator.new(board), player_white, player_black) }
   describe '#game_type' do
     context 'outputs welcome message with options to start new game or laod game' do
       context 'user input invalid option, then valid' do
@@ -84,17 +86,6 @@ describe Interface do
         expect(subject).to receive(:puts).exactly(3) # Intructions, error, intructions
         subject.prompt_valid_input
       end
-    end
-  end
-  
-
-  describe '#display_board' do
-    before do
-      allow(subject).to receive(:print)
-    end
-    it 'print colored chessboard with row number and letters row' do
-      expect(subject).to receive(:print)
-      subject.display_board
     end
   end
 end

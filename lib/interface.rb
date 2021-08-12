@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class Interface
-  attr_reader :moves_calculator, :board
+  attr_reader :moves_calculator, :board, :player_white, :player_black
 
-  def initialize(board, moves_calculator)
+  def initialize(board, moves_calculator, player_white, player_black)
     @board = board
     @moves_calculator = moves_calculator
+    @player_white = player_white
+    @player_black = player_black
   end
 
   def game_type
@@ -17,12 +19,29 @@ class Interface
     end
   end
 
-  def player_select_forced_piece(is_white)
-    king = board.king(is_white)
-    checker = moves_calculator.checker(king)
-    forced_pieces = moves_calculator.forced_pieces(king, checker)
+  def player_forced_select(forced_pieces, is_white)
     puts is_white ? 'White turn. YOU ARE UNDER CHECK!'.underline.cyan : 'Black turn. YOU ARE UNDER CHECK!'.underline.cyan
-    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
+    puts "You can only move:\n#{to_algebraic(forced_pieces.keys).green}"
+    piece_from = verify_valid_forced_piece(forced_pieces)
+    piece_to = verify_valid_forced_move(piece_from, forced_pieces)
+    [piece_from, piece_to]
+  end
+
+  def verify_valid_forced_piece(forced_pieces)
+    while (selected = to_coordinates(prompt_valid_input))
+      return selected if forced_pieces.keys.include?(selected)
+
+      puts 'Sorry, try again'.red
+    end
+  end
+
+  def verify_valid_forced_move(piece, forced_pieces)
+    display_score_board(forced_pieces[piece])
+    while (move_to = to_coordinates(prompt_valid_input))
+      return move_to if forced_pieces[piece].include?(move_to)
+
+      puts 'Sorry, try again'.red
+    end
   end
 
   def player_select_piece(is_white)
@@ -51,7 +70,7 @@ class Interface
 
   def player_select_move(coordinates, is_white)
     moves = moves_calculator.legal_moves(coordinates)
-    display_board_with_moves(moves)
+    display_score_board(moves)
     puts "The piece can move to:\n#{to_algebraic(moves).green}"
     verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates, is_white)
   end
@@ -103,32 +122,34 @@ class Interface
     end
   end
 
-  def display_board
+  def display_score_board(moves = nil)
+    puts "────────────────────\n Black score:       \n", player_black.score
+    puts '  ┌────────────────┐'
+    display_board(moves)
+    puts '  └────────────────┘'
+    print "   a b c d e f g h \n\n"
+    puts " White score:       \n", player_white.score, '────────────────────'
+  end
+
+  def display_board(moves)
     board.squares.each_with_index do |row, idx_row|
-      print  (idx_row - 8).abs, ' │' 
+      print  (idx_row - 8).abs, ' │'
       row.each_with_index do |square, idx_square|
-        print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
+        square_unicode(square, idx_row, idx_square, moves)
       end
       print "│\n"
     end
   end
 
-  def display_board_with_moves(moves)
-    # TODO: fix bg red, moves
-    board.squares.each_with_index do |row, idx_row|
-      print  (idx_row - 8).abs, ' │' 
-      row.each_with_index do |square, idx_square|
-        if moves.include?([idx_row, idx_square])
-          print square.unicode(true)
-        else
-          print black_square?(idx_row, idx_square) ? square.unicode.bg_gray : square.unicode.bg_black
-        end
-      end
-      print "│\n"
+  def square_unicode(square, idx_row, idx_square, moves)
+    if !moves.nil? && moves.include?([idx_row, idx_square])
+      print square.unicode(true)
+    else
+      print white_square?(idx_row, idx_square) ? square.unicode.bg_gray : square.unicode.bg_black
     end
   end
 
-  def black_square?(idx_row, idx_square)
+  def white_square?(idx_row, idx_square)
     idx_row.even? && idx_square.even? || idx_row.odd? && idx_square.odd?
   end
 end

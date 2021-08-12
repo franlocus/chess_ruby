@@ -11,9 +11,9 @@ class Game
   def initialize
     @board = Board.new
     @moves_calculator = MovesCalculator.new(@board)
-    @interface = Interface.new(@board, @moves_calculator)
     @player_white = Player.new(true)
     @player_black = Player.new(false)
+    @interface = Interface.new(@board, @moves_calculator, @player_white, @player_black)
     @moves_controller = MovesController.new(@board, @interface)
     
   end

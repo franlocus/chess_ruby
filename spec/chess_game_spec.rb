@@ -8,14 +8,12 @@ require_relative '../lib/moves_calculator'
 describe ChessGame do
   let(:board) { Board.new }
   let(:moves_calculator) { MovesCalculator.new(board) }  
-  let(:interface) {Interface.new(board, moves_calculator)}
+  let(:player_white) { Player.new(true) }
+  let(:player_black) { Player.new(false) }
+  let(:interface) { Interface.new(board, moves_calculator , player_white, player_black) }
   let(:subject) { described_class.new(interface, Player.new(true), Player.new(false), MovesController.new(board, interface), board, moves_calculator) }
   describe '#initialize' do
     it 'init board and players' do
-      # output just because love to see it printed <3
-      puts
-      puts subject.display_score_board
-      # #############################################
       interface = subject.instance_variable_get(:@interface)
       player_white = subject.instance_variable_get(:@player_white)
       player_black = subject.instance_variable_get(:@player_black)

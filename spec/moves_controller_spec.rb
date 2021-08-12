@@ -9,7 +9,9 @@ require_relative '../lib/colorize'
 
 describe MovesController do
   let(:board) { Board.new }
-  let(:interface) {Interface.new(board, MovesCalculator.new(board)) }
+  let(:player_white) { Player.new(true) }
+  let(:player_black) { Player.new(false) }
+  let(:interface) { Interface.new(board, MovesCalculator.new(board) , player_white, player_black) }
   let(:subject) { described_class.new(board, interface) }
   describe '#make_move' do
     let(:player_white) { Player.new(true) }

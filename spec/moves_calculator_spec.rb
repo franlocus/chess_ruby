@@ -8,6 +8,9 @@ require_relative '../lib/interface'
 describe MovesCalculator do
   let(:board) { Board.new }
   let(:subject) { described_class.new(board) }
+  let(:player_white) { Player.new(true) }
+  let(:player_black) { Player.new(false) }
+  let(:interface) { Interface.new(board, MovesCalculator.new(board) , player_white, player_black) }
   describe '#legal_moves' do
     it 'take coordinates in argument and output legal moves' do
       expect(subject.legal_moves([7, 3])).not_to be_nil
@@ -32,9 +35,7 @@ describe MovesCalculator do
   end
   context 'pawns movements' do
     let(:subject) { described_class.new(board) }
-    let(:player_white) { Player.new(true) }
-    let(:player_black) { Player.new(false) }
-    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
+   
     let(:moves_controller) { MovesController.new(board, interface) }
     # white
     it 'returns 2 pawns\'s moves from d2' do
@@ -172,7 +173,6 @@ describe MovesCalculator do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
-    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
     let(:moves_controller) { MovesController.new(board, interface) }
     describe 'pawn in e2 is pinned because the queen in e7' do
       it 'returns true' do
@@ -239,7 +239,6 @@ describe MovesCalculator do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
-    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
     let(:moves_controller) { MovesController.new(board, interface) }
     describe 'forced_pieces after check with queen in e7 ' do
       it 'returns intercepters' do

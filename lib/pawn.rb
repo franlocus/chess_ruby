@@ -76,7 +76,7 @@ class Pawn < Piece
       end
     end
   end
-  
+
   def unicode(printing_moves = false)
     if printing_moves
       is_white ? '♙⌝'.magenta.bg_red : '♟︎⌝'.yellow.bg_red
