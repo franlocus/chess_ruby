@@ -265,6 +265,47 @@ describe MovesCalculator do
         expect(subject.forced_pieces(king, checker).to_a).to match_array([[[5, 0], [1, 4]], [[7, 3], [[6, 4]]], [[7, 5], [[6, 4]]], [[7, 6], [[6, 4]]]])
       end
     end
+    describe 'the king is in check, pinned pieces can not move ' do
+      it 'not include pieces under pin ' do
+        8.times { |i| subject.board.delete_piece([6, i - 1]) } # delete white pawns 
+        moves_controller.make_move([0, 3], [5, 4], player_black)
+        moves_controller.make_move([0, 5], [4, 1], player_black)
+        moves_controller.make_move([7, 3], [6, 4], player_white)
+        #interface.display_board
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(checker.square).to match_array([4, 1])
+        expect(subject.forced_pieces(king, checker).keys).not_to include([6, 4])
+      end
+      it 'the king only can capture the undefended checker or evade ' do
+        8.times { |i| subject.board.delete_piece([6, i - 1]) } # delete white pawns 
+        moves_controller.make_move([0, 3], [3, 4], player_black)
+        moves_controller.make_move([0, 5], [6, 3], player_black)
+        moves_controller.make_move([7, 3], [6, 4], player_white)
+        subject.board.delete_piece([7, 1]) # delete knight
+        subject.board.delete_piece([7, 2]) # delete bishop
+        #interface.display_board
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(checker.square).to match_array([6, 3])
+        expect(subject.forced_pieces(king, checker).keys).to eq([[7, 4]])
+      end
+      it 'the king cant castle under check ' do
+        8.times { |i| subject.board.delete_piece([6, i - 1]) } # delete white pawns 
+        moves_controller.make_move([0, 3], [3, 4], player_black)
+        moves_controller.make_move([0, 5], [6, 3], player_black)
+        moves_controller.make_move([7, 3], [6, 4], player_white)
+        subject.board.delete_piece([7, 1]) # delete knight
+        subject.board.delete_piece([7, 2]) # delete bishop
+        subject.board.delete_piece([7, 5]) # delete knight
+        subject.board.delete_piece([7, 6]) # delete bishop
+        interface.display_board
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(checker.square).to match_array([6, 3])
+        expect(subject.forced_pieces(king, checker).values.flatten(1)).not_to include([7, 6])
+      end
+    end
   end
 end
 
