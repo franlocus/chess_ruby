@@ -12,22 +12,12 @@ describe ChessGame do
   let(:player_black) { Player.new(false) }
   let(:interface) { Interface.new(board, moves_calculator , player_white, player_black) }
   let(:subject) { described_class.new(interface, Player.new(true), Player.new(false), MovesController.new(board, interface), board, moves_calculator) }
-  describe '#initialize' do
-    it 'init board and players' do
-      interface = subject.instance_variable_get(:@interface)
-      player_white = subject.instance_variable_get(:@player_white)
-      player_black = subject.instance_variable_get(:@player_black)
-      expect(interface).to be_a(Interface)
-      expect(player_white).to be_a(Player)
-      expect(player_white.is_white).to be_truthy
-      expect(player_black).to be_a(Player)
-      expect(player_black.is_white).to be_falsy
-    end
-  end
+  
   describe '#freely_piece_selection' do
     before do
       subject.current_player = Player.new(true)
-      allow(subject).to receive(:puts)
+      allow(interface).to receive(:print)
+      allow(interface).to receive(:puts)
       valid_input = 'a2'
       valid_move = 'a3'
       allow(interface).to receive(:gets).and_return(valid_input, valid_move)
@@ -40,7 +30,8 @@ describe ChessGame do
   describe '#forced_piece_selection' do
     before do
       subject.current_player = Player.new(true)
-      allow(subject).to receive(:puts)
+      allow(interface).to receive(:print)
+      allow(interface).to receive(:puts)
       valid_input = 'a2'
       valid_move = 'a3'
       allow(interface).to receive(:gets).and_return(valid_input, valid_move)

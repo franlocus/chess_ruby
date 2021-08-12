@@ -75,7 +75,6 @@ describe MovesCalculator do
       expect(subject.legal_moves([6, 5])).to match_array([[4, 5], [5, 4], [5, 5], [5, 6]])
     end
     it 'can move en passant' do
-      board = subject.board
       moves_controller.make_move([6, 4], [3, 4], player_white)
       moves_controller.make_move([1, 3], [3, 3], player_black)
       expect(subject.legal_moves([3, 4])).to match_array([[2, 3], [2, 4]])

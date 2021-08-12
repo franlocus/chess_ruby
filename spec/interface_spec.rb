@@ -17,7 +17,7 @@ describe Interface do
           allow(subject).to receive(:gets).and_return("25", "1\n")
         end
         it 'puts error once then return game_type 1' do
-          expect(subject).to receive(:puts).twice # intruction and error warning 
+          expect(subject).to receive(:puts).twice # intruction and error warning
           expect(subject.game_type).to eq(1)
         end
       end
