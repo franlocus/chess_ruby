@@ -7,19 +7,23 @@ class MovesCalculator
     @board = board
   end
 
-  def legal_moves(coordinates, is_white) 
-    # delete is_white argument, replace with piece.is_white
-    piece = board.piece(coordinates)
+  def legal_moves(coordinates) 
+    piece, color = fetch_piece_and_color(coordinates)
     if piece.is_a?(King)
-      piece.moves(board, enemy_defended_squares(is_white))
-    elsif under_pin?(piece, is_white)
+      piece.moves(board, enemy_defended_squares(color))
+    elsif under_pin?(piece, color)
       return [] if piece.is_a?(Knight)
 
-      king = board.king(is_white)
-      piece.moves(board) & moves_to_pinner_and_king(piece, king, false)
+      king = board.king(color)
+      piece.moves(board) & moves_to_pinner_and_king(piece, king)
     else
       piece.moves(board)
     end
+  end
+
+  def fetch_piece_and_color(coordinates)
+    piece = board.piece(coordinates)
+    [piece, piece.is_white]
   end
 
   def forced_pieces(king, checker)
@@ -71,23 +75,23 @@ class MovesCalculator
   def search_fireline(checker, king_square)
     return [] if %w[Pawn Knight].include?(checker.class.to_s)
 
-    checker.moves(self.board, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
+    checker.moves(board, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
   end
 
-  def moves_to_pinner_and_king(piece, king, checker)
-    toward_pinner(piece, king, checker) + toward_king(piece, king)
+  def moves_to_pinner_and_king(piece, king)
+    toward_pinner(piece, king) + toward_king(piece, king)
   end
 
-  def toward_pinner(piece, king, checker)
+  def toward_pinner(piece, king)
     moves = []
-    pinner = fetch_pinner(piece, king, checker)
+    pinner = fetch_pinner(piece, king)
     pinner.moves(board, false, 'Hash').each_value { |value| moves += value if value.include?(piece.square) }
     moves << pinner.square
   end
 
-  def fetch_pinner(piece, king, checker)
+  def fetch_pinner(piece, king)
     board_clone = simulate_a_board_without_piece(piece.square)
-    checker(king, board_clone, checker)
+    checker(king, board_clone)
   end
 
   def toward_king(piece, king)
@@ -98,20 +102,16 @@ class MovesCalculator
     moves
   end
 
-  def checker(king, board = self.board, checker = false)
+  def checker(king, board = self.board)
     board.squares.each do |row|
       row.each do |square|
         next if square.nil? || square.is_a?(King) || !square.moves(board).include?(king.square)
 
-        return square unless square == checker
+        return square
       end
     end
-    # returns nil in case square == checker, situation when there is double check
     nil
   end
-
-  # TODO: xrayed king test in middle board 
-  # TODO: double check
 
   def under_check?(is_white, normal_or_simulated_board = board)
     attacked_squares = enemy_defended_squares(is_white, normal_or_simulated_board)
@@ -132,7 +132,6 @@ class MovesCalculator
   end
 
   def under_pin?(piece, is_white, already_checker = nil)
-    # borrar primer oel checker
     if already_checker.nil?
       board_clone = simulate_a_board_without_piece(piece.square)
     else

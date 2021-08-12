@@ -11,8 +11,8 @@ class King < Piece
 
   def moves(board, attacked_squares, checker = false)
     if checker
-      xrayed = xrayed(board, checker)
-      normal_moves(board, attacked_squares).reject { |move| xrayed.include?(move) }
+      checker_xrayed_squares = checker_xrayed_squares(board, checker)
+      normal_moves(board, attacked_squares).reject { |move| checker_xrayed_squares.include?(move) }
     else
       normal_moves(board, attacked_squares) + castle_moves(board, attacked_squares)
     end
@@ -32,12 +32,17 @@ class King < Piece
     end
   end
 
-  def xrayed(board, checker)
+  def checker_xrayed_squares(real_board, checker)
     return [] if %w[Pawn Knight].include?(checker.class.to_s)
 
-    board = board.clone
-    board.squares = board.squares.map { |row| row.map { |square| square == self ? nil : square } }
-    checker.legal_moves(board, false, 'Hash').each_value { |value| return value if value.include?(self.square) }
+    board_clone = simulate_a_board_without_king(real_board, square)
+    checker.moves(board_clone, false, 'Hash').each_value { |value| return value if value.include?(square) }
+  end
+
+  def simulate_a_board_without_king(board, piece_square)
+    board_clone = Marshal.load(Marshal.dump(board)) # deep copy trick
+    board_clone.delete_piece(piece_square)
+    board_clone
   end
 
   def around_squares

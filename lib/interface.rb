@@ -32,7 +32,7 @@ class Interface
 
   def verify_valid_piece(algebraic, is_white)
     coordinates = to_coordinates(algebraic)
-    return coordinates if piece_with_player_color?(coordinates, is_white) && piece_can_move?(coordinates, is_white)
+    return coordinates if piece_with_player_color?(coordinates, is_white) && piece_can_move?(coordinates)
   end
 
   def piece_with_player_color?(coordinates, is_white)
@@ -40,8 +40,8 @@ class Interface
     return true unless piece.nil? || piece.is_white != is_white
   end
 
-  def piece_can_move?(coordinates, is_white)
-    !moves_calculator.legal_moves(coordinates, is_white).empty?
+  def piece_can_move?(coordinates)
+    !moves_calculator.legal_moves(coordinates).empty?
   end
 
   def try_again_input_piece(is_white)
@@ -50,7 +50,7 @@ class Interface
   end
 
   def player_select_move(coordinates, is_white)
-    moves = moves_calculator.legal_moves(coordinates, is_white)
+    moves = moves_calculator.legal_moves(coordinates)
     display_board_with_moves(moves)
     puts "The piece can move to:\n#{to_algebraic(moves).green}"
     verify_valid_move(to_coordinates(prompt_valid_input), moves) || try_again_input_move(coordinates, is_white)
