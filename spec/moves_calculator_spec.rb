@@ -235,5 +235,36 @@ describe MovesCalculator do
       end
     end
   end
+  context 'under check forced pieces ' do
+    let(:subject) { described_class.new(board) }
+    let(:player_white) { Player.new(true) }
+    let(:player_black) { Player.new(false) }
+    let(:interface) { Interface.new(board, MovesCalculator.new(board)) }
+    let(:moves_controller) { MovesController.new(board, interface) }
+    describe 'forced_pieces after check with queen in e7 ' do
+      it 'returns intercepters' do
+        moves_controller.make_move([0, 3], [1, 4], player_black)
+        expect(subject.board.piece([1, 4])).to be_a(Queen)
+        subject.board.delete_piece([6, 4]) # delete_pawn
+        expect(subject.under_check?(true)).to be_truthy
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(checker.square).to match_array([1, 4])
+        expect(subject.forced_pieces(king, checker)).to match_array(({[7, 3]=>[[6, 4]], [7, 5]=>[[6, 4]], [7, 6]=>[[6, 4]]}).to_a)
+      end
+
+      it 'returns intercepters and defenders(who can attack directly the checker)' do
+        moves_controller.make_move([0, 3], [1, 4], player_black)
+        moves_controller.make_move([7, 2], [5, 0], player_white)
+        expect(subject.board.piece([5, 0])).to be_a(Bishop)
+        subject.board.delete_piece([6, 4]) # delete_pawn
+        expect(subject.under_check?(true)).to be_truthy
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(checker.square).to match_array([1, 4])
+        expect(subject.forced_pieces(king, checker).to_a).to match_array([[[5, 0], [1, 4]], [[7, 3], [[6, 4]]], [[7, 5], [[6, 4]]], [[7, 6], [[6, 4]]]])
+      end
+    end
+  end
 end
 

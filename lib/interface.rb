@@ -17,6 +17,14 @@ class Interface
     end
   end
 
+  def player_select_forced_piece(is_white)
+    king = board.king(is_white)
+    checker = moves_calculator.checker(king)
+    forced_pieces = moves_calculator.forced_pieces(king, checker)
+    puts is_white ? 'White turn. YOU ARE UNDER CHECK!'.underline.cyan : 'Black turn. YOU ARE UNDER CHECK!'.underline.cyan
+    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
+  end
+
   def player_select_piece(is_white)
     puts is_white ? 'White turn'.underline : 'Black turn'.underline
     verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
@@ -113,7 +121,7 @@ class Interface
         if moves.include?([idx_row, idx_square])
           print square.unicode(true)
         else
-          print black_square?(idx_row, idx_square) ? square.unicode.bg_black : square.unicode.bg_gray
+          print black_square?(idx_row, idx_square) ? square.unicode.bg_gray : square.unicode.bg_black
         end
       end
       print "│\n"

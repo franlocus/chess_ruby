@@ -39,7 +39,7 @@ describe ChessGame do
     end
   end
 
-  describe '#freely_piece_selection' do
+  describe '#forced_piece_selection' do
     before do
       subject.current_player = Player.new(true)
       allow(subject).to receive(:puts)

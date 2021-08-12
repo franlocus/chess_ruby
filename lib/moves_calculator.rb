@@ -28,9 +28,14 @@ class MovesCalculator
   def forced_pieces(king, checker)
     pieces = check_blockers(checker, king)
     #pieces[king.square] = king.legal_moves(self, false, checker) unless king.legal_moves(self, false, checker).empty?
-    #pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king, checker) }
+    #pieces.reject { |piece_square| under_pin?(board.piece(piece_square), king.is_white, checker) }
   end
-
+# que hacer hoy
+# ayer lo ultimo fue las forced pieces
+# falta agregar king si puede comerse a la piece
+# testear si la pieza esta under pin no podria moverse a defender o interceptar 
+# pero esta situacion es conflictiva con el metodo de chequeear si esta under pin
+# analizar posibilidad de agregar argumento checker = false y pasarlo cuando haya para no dar falso positivo
   def check_blockers(checker, king)
     defenders = defenders(checker, king)
     intercepters = intercepters(checker, king)
@@ -43,60 +48,28 @@ class MovesCalculator
 
   def defenders(checker, king)
     defenders = {}
-    board.squares.each do |row|
-      row.each do |square|
-        next if square.nil? || (square.is_white != king.is_white) || square.is_a?(King)
+    player_pieces(king.is_white).each do |piece|
+      next if piece.is_a?(King)
 
-        if legal_moves(square.square, king.is_white).include?(checker.square)
-          defenders[square.square] = checker.square
-        end
-      end
+      defenders[piece.square] = checker.square if piece.moves(board).include?(checker.square)
     end
     defenders
   end
 
-  def all_player_pieces(is_white)
-    #board.squares.flatten(1).map  do |piece|
-    #  next if piece.is_white != king.is_white || piece.is_a?(King)
-#
-    #  squares_in_common = piece.moves(board) & fire_line
-    #  next if squares_in_common.empty?
-#
-    #  intercepter[piece.square] = squares_in_common
-    #end
-
+  def player_pieces(is_white)
     board.squares.flatten(1).map { |square| square unless square.nil? || square.is_white != is_white }.compact
   end
 
   def intercepters(checker, king, intercepter = {})
     fire_line = search_fireline(checker, king.square)
-    # board.squares.flatten(1).compact.each  do |piece|
-    #   next if piece.is_white != king.is_white || piece.is_a?(King)
-# 
-    #   squares_in_common = piece.moves(board) & fire_line
-    #   next if squares_in_common.empty?
-# 
-    #   intercepter[piece.square] = squares_in_common
-    # end
-   
-    all_player_pieces(king.is_white).each do |piece|
+    player_pieces(king.is_white).each do |piece|
       next if piece.is_a?(King)
 
       squares_in_common = piece.moves(board) & fire_line
       next if squares_in_common.empty?
-  
+
       intercepter[piece.square] = squares_in_common
     end
-    # board.squares.each do |row|
-    #   row.each do |square|
-    #     next if square.nil? || (square.is_white != king.is_white) || square.is_a?(King)
-    #     # TODO: review hash with empty value? makes possible to delete the unless condition
-    #     
-    #     unless (square.moves(board) & fire_line).empty?
-    #       intercepter[square.square] = (square.moves(board) & fire_line)
-    #     end
-    #   end
-    # end
     intercepter
   end
 
@@ -163,6 +136,18 @@ class MovesCalculator
   def under_pin?(piece, is_white)
     board_clone = simulate_a_board_without_piece(piece.square)
     under_check?(is_white, board_clone)
+    #fetch_checker(king, board_clone, checker).nil? ? false : true
+  end
+
+  def fetch_checker(king, board = self, checker = false)
+    board.squares.each do |row|
+      row.each do |square|
+        next if square.nil? || !square.legal_moves(board).include?(king.square)
+
+        return square unless square == checker
+      end
+    end
+    nil
   end
 
   def simulate_a_board_without_piece(piece_square)

@@ -53,7 +53,7 @@ class ChessGame
   end
 
   def forced_piece_selection
-    piece_from = interface.player_select_piece(current_player.is_white)
+    piece_from = interface.player_select_forced_piece(current_player.is_white)
     piece_to = interface.player_select_move(piece_from, current_player.is_white)
     [piece_from, piece_to]
   end
