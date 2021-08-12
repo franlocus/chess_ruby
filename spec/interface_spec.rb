@@ -25,6 +25,7 @@ describe Interface do
     context 'valid input from white player' do
       before do
         allow(subject).to receive(:puts)
+        allow(subject).to receive(:print)
         valid_input = 'a2'
         allow(subject).to receive(:gets).and_return(valid_input)
       end
@@ -37,6 +38,7 @@ describe Interface do
     context 'input once valid input' do
       before do
         allow(subject).to receive(:puts)
+        allow(subject).to receive(:print)
         valid_input = 'a3'
         allow(subject).to receive(:gets).and_return(valid_input)
       end

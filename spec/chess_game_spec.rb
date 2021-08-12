@@ -47,7 +47,7 @@ describe ChessGame do
       valid_move = 'a3'
       allow(interface).to receive(:gets).and_return(valid_input, valid_move)
     end
-    xit 'returns array with 2 coordinates from algebraic a2,a3' do
+    it 'returns array with 2 coordinates from algebraic a2,a3' do
       expect(subject.freely_piece_selection).to match_array([[6, 0], [5, 0]])
     end
   end
