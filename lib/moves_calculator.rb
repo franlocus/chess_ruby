@@ -7,7 +7,8 @@ class MovesCalculator
     @board = board
   end
 
-  def legal_moves(coordinates, is_white) # checker = false
+  def legal_moves(coordinates, is_white, checker = false) # checker = false
+    # delete is_white argument, replace with piece.is_white
     piece = board.piece(coordinates)
     if piece.is_a?(King)
       piece.moves(board, enemy_defended_squares(is_white))
@@ -22,6 +23,87 @@ class MovesCalculator
     else
       piece.moves(board)
     end
+  end
+
+  def forced_pieces(king, checker)
+    pieces = check_blockers(checker, king)
+    #pieces[king.square] = king.legal_moves(self, false, checker) unless king.legal_moves(self, false, checker).empty?
+    #pieces.reject { |piece_square| under_pin?(fetch_piece(piece_square), king, checker) }
+  end
+
+  def check_blockers(checker, king)
+    defenders = defenders(checker, king)
+    intercepters = intercepters(checker, king)
+    defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
+      defender_val = [defender_val] unless defender_val.any?(Array)
+      intercepter_val = [intercepter_val] unless intercepter_val.any?(Array)
+      defender_val + intercepter_val
+    end
+  end
+
+  def defenders(checker, king)
+    defenders = {}
+    board.squares.each do |row|
+      row.each do |square|
+        next if square.nil? || (square.is_white != king.is_white) || square.is_a?(King)
+
+        if legal_moves(square.square, king.is_white).include?(checker.square)
+          defenders[square.square] = checker.square
+        end
+      end
+    end
+    defenders
+  end
+
+  def all_player_pieces(is_white)
+    #board.squares.flatten(1).map  do |piece|
+    #  next if piece.is_white != king.is_white || piece.is_a?(King)
+#
+    #  squares_in_common = piece.moves(board) & fire_line
+    #  next if squares_in_common.empty?
+#
+    #  intercepter[piece.square] = squares_in_common
+    #end
+
+    board.squares.flatten(1).map { |square| square unless square.nil? || square.is_white != is_white }.compact
+  end
+
+  def intercepters(checker, king, intercepter = {})
+    fire_line = search_fireline(checker, king.square)
+    # board.squares.flatten(1).compact.each  do |piece|
+    #   next if piece.is_white != king.is_white || piece.is_a?(King)
+# 
+    #   squares_in_common = piece.moves(board) & fire_line
+    #   next if squares_in_common.empty?
+# 
+    #   intercepter[piece.square] = squares_in_common
+    # end
+   
+    all_player_pieces(king.is_white).each do |piece|
+      next if piece.is_a?(King)
+
+      squares_in_common = piece.moves(board) & fire_line
+      next if squares_in_common.empty?
+  
+      intercepter[piece.square] = squares_in_common
+    end
+    # board.squares.each do |row|
+    #   row.each do |square|
+    #     next if square.nil? || (square.is_white != king.is_white) || square.is_a?(King)
+    #     # TODO: review hash with empty value? makes possible to delete the unless condition
+    #     
+    #     unless (square.moves(board) & fire_line).empty?
+    #       intercepter[square.square] = (square.moves(board) & fire_line)
+    #     end
+    #   end
+    # end
+    intercepter
+  end
+
+  def search_fireline(checker, king_square)
+    return [] if %w[Pawn Knight].include?(checker.class.to_s)
+
+    checker.moves(self.board, false, 'Hash').each_value { |value| return value if value.include?(king_square) }
   end
 
   def moves_to_pinner_and_king(piece, king, checker)
