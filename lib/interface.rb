@@ -11,7 +11,7 @@ class Interface
   end
 
   def game_type
-    puts "Welcome to Chess!\nGet ready to play, enjoy.\nSelect a game mode:\n1: New Game\n2: Load Game".cyan
+    puts "Welcome to Chess!\nGet ready to play, enjoy.\nSelect a game mode:\n1: New Game\n2: Load last game".cyan
     while (game_type = gets.chomp.to_i)
       return game_type if [1, 2].include?(game_type)
 

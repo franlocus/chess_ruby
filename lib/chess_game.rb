@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'database'
+
 class ChessGame
+  include Database
   attr_accessor :current_player
   attr_reader :moves_controller, :player_white, :player_black, :interface, :moves_calculator, :board
 
@@ -14,6 +17,10 @@ class ChessGame
   end
 
   # private after all test
+  def play_game
+    game_type = interface.game_type
+    game_type == 1 ? new_game : load_game
+  end
 
   def new_game
     @current_player ||= player_white
@@ -66,10 +73,6 @@ class ChessGame
     checker = moves_calculator.checker(king)
     forced_pieces = moves_calculator.forced_pieces(king, checker)
     interface.player_forced_select(forced_pieces, current_player.is_white)
-  end
-
-  def save_game
-    abort 'game saved'
   end
 
   def switch_current_player
