@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 require_relative '../lib/chess_game'
 require_relative '../lib/player'
@@ -7,8 +8,8 @@ require_relative '../lib/interface'
 require_relative '../lib/moves_controller'
 require_relative '../lib/moves_calculator'
 require_relative '../lib/colorize'
+
 class Game
-  attr_reader :interface, :board
   def initialize
     @board = Board.new
     @moves_calculator = MovesCalculator.new(@board)
@@ -19,8 +20,15 @@ class Game
   end
 
   def play
-    # TODO: hash > fix dependecy order
-    ChessGame.new(@interface, @player_white, @player_black, @moves_controller, @board, @moves_calculator).play_game
+    args = {
+      'board' => @board,
+      'interface' => @interface,
+      'moves_calculator' => @moves_calculator,
+      'player_white' => @player_white,
+      'player_black' => @player_black,
+      'moves_controller' => @moves_controller
+    }
+    ChessGame.new(args).play_game
   end
 end
 

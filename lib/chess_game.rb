@@ -7,13 +7,13 @@ class ChessGame
   attr_accessor :current_player
   attr_reader :moves_controller, :player_white, :player_black, :interface, :moves_calculator, :board
 
-  def initialize(interface, player_white, player_black, moves_controller, board, moves_calculator)
-    @player_white = player_white
-    @player_black = player_black
-    @interface = interface
-    @moves_controller = moves_controller
-    @board = board
-    @moves_calculator = moves_calculator
+  def initialize(args)
+    @player_white = args['player_white']
+    @player_black = args['player_black']
+    @interface = args['interface']
+    @moves_controller = args['moves_controller']
+    @board = args['board']
+    @moves_calculator = args['moves_calculator']
   end
 
   # private after all test
