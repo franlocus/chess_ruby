@@ -59,6 +59,14 @@ class MovesCalculator
     board.squares.flatten(1).map { |square| square unless square.nil? || square.is_white != is_white }.compact
   end
 
+  def all_player_moves(is_white)
+    all_moves = []
+    player_pieces(is_white).each do |piece|
+      all_moves += legal_moves(piece.square)
+    end
+    all_moves
+  end
+
   def intercepters(checker, king, intercepter = {})
     # pieces who can intercept the "fireline"
     fire_line = search_fireline(checker, king.square)

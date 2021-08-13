@@ -234,7 +234,7 @@ describe MovesCalculator do
       end
     end
   end
-  context 'under check forced pieces ' do
+  context 'under check circunstances ' do
     let(:subject) { described_class.new(board) }
     let(:player_white) { Player.new(true) }
     let(:player_black) { Player.new(false) }
@@ -327,6 +327,36 @@ describe MovesCalculator do
         king = subject.board.king(true)
         checker = subject.checker(king)
         expect(subject.forced_pieces(king, checker)).to include([7, 4])
+      end
+      it 'checkmate' do
+        8.times { |i| subject.board.delete_piece([6, i - 1]) } # delete white pawns 
+        moves_controller.make_move([0, 3], [5, 5], player_black)
+        moves_controller.make_move([0, 1], [5, 4], player_black)
+        moves_controller.make_move([0, 7], [4, 4], player_black)
+        moves_controller.make_move([7, 3], [6, 3], player_white)
+        subject.board.delete_piece([7, 1]) # delete knight
+        subject.board.delete_piece([7, 2]) # delete bishop
+        subject.board.delete_piece([7, 5]) # delete knight
+        subject.board.delete_piece([7, 6]) # delete bishop
+        moves_controller.make_move([5, 4], [6, 2], player_black)
+        interface.display_score_board
+        king = subject.board.king(true)
+        checker = subject.checker(king)
+        expect(subject.forced_pieces(king, checker)).to be_empty
+      end
+      it 'stalemate' do
+        moves_controller.make_move([7, 4], [5, 0], player_white) 
+        8.times { |i| subject.board.delete_piece([6, i - 1]) } # delete white pawns 
+        8.times { |i| subject.board.delete_piece([7, i - 1]) } # delete white pawns 
+        moves_controller.make_move([5, 0], [7, 4], player_white) 
+
+        moves_controller.make_move([0, 3], [5, 5], player_black)
+        moves_controller.make_move([0, 1], [5, 4], player_black)
+        moves_controller.make_move([0, 7], [4, 3], player_black)
+        
+        #moves_controller.make_move([5, 4], [6, 2], player_black)
+        interface.display_score_board
+        expect(subject.all_player_moves(true)).to be_empty
       end
     end
   end

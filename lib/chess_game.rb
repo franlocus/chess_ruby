@@ -24,9 +24,10 @@ class ChessGame
   def turn_order
     loop do
       interface.display_score_board
+      return if game_over?
+
       movement = forced_turn? ? forced_piece_selection : freely_piece_selection
       moves_controller.make_move(movement.first, movement.last, current_player)
-      # return if checkmate || stalemate
       switch_current_player
     end
   end
@@ -34,8 +35,21 @@ class ChessGame
   # end condition
   # save game
 
-  def end_condition?
+  def game_over?
+    checkmate? || stalemate?
+  end
 
+  def checkmate?
+    return false unless forced_turn?
+
+    king = board.king(current_player.is_white)
+    checker = moves_calculator.checker(king)
+    forced_pieces = moves_calculator.forced_pieces(king, checker)
+    forced_pieces.empty?
+  end
+
+  def stalemate?
+    moves_calculator.all_player_moves(current_player.is_white).empty?
   end
 
   def forced_turn?
