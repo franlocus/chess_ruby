@@ -31,16 +31,19 @@ class Interface
     while (selected = to_coordinates(prompt_valid_input))
       return selected if forced_pieces.keys.include?(selected)
 
-      puts 'Sorry, try again'.red
+      puts 'Sorry, try again select a forced piece'.red
     end
   end
 
   def verify_valid_forced_move(piece, forced_pieces)
-    display_score_board(forced_pieces[piece])
+    moves = forced_pieces[piece]
+    moves = [moves] unless moves.any?(Array)
+    display_score_board(moves)
+    puts "The piece can move to:\n#{to_algebraic(moves).green}"
     while (move_to = to_coordinates(prompt_valid_input))
-      return move_to if forced_pieces[piece].include?(move_to)
+      return move_to if moves.include?(move_to)
 
-      puts 'Sorry, try again'.red
+      puts 'Sorry, try again enter a forced move'.red
     end
   end
 
@@ -130,12 +133,12 @@ class Interface
   end
 
   def display_score_board(moves = nil)
-    puts "────────────────────\n Black score:       \n", player_black.score
+    puts "────────────────────\n Black score:       \n", player_black.score.join.to_s
     puts '  ┌────────────────┐'
     display_board(moves)
     puts '  └────────────────┘'
     print "   a b c d e f g h \n\n"
-    puts " White score:       \n", player_white.score, '────────────────────'
+    puts " White score:       \n", player_white.score.join.to_s, '────────────────────'
   end
 
   def display_board(moves)
