@@ -13,11 +13,6 @@ class ChessGame
     @moves_calculator = moves_calculator
   end
 
-  def play_game
-    game_type = interface.game_type
-    game_type == 1 ? new_game : load_game
-  end
-
   # private after all test
 
   def new_game
@@ -27,8 +22,6 @@ class ChessGame
   end
 
   def turn_order
-  # king in check?
-  # normal_turn || forced_turn
     loop do
       interface.display_score_board
       movement = forced_turn? ? forced_piece_selection : freely_piece_selection
@@ -37,9 +30,12 @@ class ChessGame
       switch_current_player
     end
   end
+  # que hacer hoy
+  # end condition
+  # save game
 
   def end_condition?
-    
+
   end
 
   def forced_turn?
@@ -48,6 +44,8 @@ class ChessGame
 
   def freely_piece_selection
     piece_from = interface.player_select_piece(current_player.is_white)
+    return save_game if piece_from =~ /^save$/
+
     piece_to = interface.player_select_move(piece_from, current_player.is_white)
     [piece_from, piece_to]
   end
@@ -59,10 +57,8 @@ class ChessGame
     interface.player_forced_select(forced_pieces, current_player.is_white)
   end
 
-  def game_over
-    # puts current_player WIN
-    # checkmate?
-    # stalemate?
+  def save_game
+    abort 'game saved'
   end
 
   def switch_current_player
@@ -72,4 +68,12 @@ class ChessGame
                             player_white
                           end
   end
+
+  def game_over
+    # puts current_player WIN
+    # checkmate?
+    # stalemate?
+  end
+
+  
 end

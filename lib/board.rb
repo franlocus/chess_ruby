@@ -61,7 +61,6 @@ class Board
 
   def relocate_piece(coordinates, piece)
     squares[coordinates.first][coordinates.last] = piece
-    # be careful, this method do not update piece.square
   end
 
   def king(is_white)
@@ -69,12 +68,3 @@ class Board
   end
 end
 
-class NilClass
-  def unicode(printing_moves = false)
-    if printing_moves
-      '◌ '.bg_green
-    else
-      '  '
-    end
-  end
-end

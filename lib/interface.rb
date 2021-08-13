@@ -46,7 +46,10 @@ class Interface
 
   def player_select_piece(is_white)
     puts is_white ? 'White turn'.underline : 'Black turn'.underline
-    verify_valid_piece(prompt_valid_input, is_white) || try_again_input_piece(is_white)
+    input = prompt_valid_input
+    return 'save' if input.match?(/^save$/)
+
+    verify_valid_piece(input, is_white) || try_again_input_piece(is_white)
   end
 
   def verify_valid_piece(algebraic, is_white)
@@ -76,7 +79,6 @@ class Interface
   end
 
   def verify_valid_move(selected_move, moves)
-    # TODO: review the use of [move]
     return selected_move if moves.include?(selected_move) || [moves].include?(selected_move)
   end
 
@@ -91,12 +93,17 @@ class Interface
   end
 
   def prompt_valid_input
-    puts "\nPlease enter a square in algebraic notation:".cyan
-    validate_algebraic(gets.chomp) || try_again_prompt
+    puts "\nPlease enter a square in algebraic notation or 'save' to save game".cyan
+    input = gets.chomp
+    validate_algebraic(input) || validate_save_game(input) || try_again_prompt
   end
 
   def validate_algebraic(input)
     return input if input.match?(/^[a-h][1-8]$/)
+  end
+
+  def validate_save_game(input)
+    return input if input.match?(/^save$/)
   end
 
   def to_coordinates(algebraic)

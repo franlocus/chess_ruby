@@ -49,3 +49,13 @@ describe ChessGame do
     end
   end
 end
+
+class NilClass
+  def unicode(printing_moves = false)
+    if printing_moves
+      '◌ '.bg_green
+    else
+      '  '
+    end
+  end
+end

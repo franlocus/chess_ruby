@@ -84,4 +84,3 @@ describe MovesController do
     end
   end
 end
-

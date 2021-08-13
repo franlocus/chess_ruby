@@ -36,7 +36,7 @@ class MovesCalculator
   end
 
   def check_blockers(checker, king)
-    defenders = defenders(checker, king)
+    defenders = checker_attackers(checker, king)
     intercepters = intercepters(checker, king)
     defenders.merge(intercepters) do |_key, defender_val, intercepter_val|
       defender_val = [defender_val] unless defender_val.any?(Array)
@@ -45,8 +45,8 @@ class MovesCalculator
     end
   end
 
-  def defenders(checker, king)
-    defenders = {}
+  def checker_attackers(checker, king)
+    defenders = {} # pieces who can attack the checker directly
     player_pieces(king.is_white).each do |piece|
       next if piece.is_a?(King)
 
@@ -60,6 +60,7 @@ class MovesCalculator
   end
 
   def intercepters(checker, king, intercepter = {})
+    # pieces who can intercept the "fireline"
     fire_line = search_fireline(checker, king.square)
     player_pieces(king.is_white).each do |piece|
       next if piece.is_a?(King)
@@ -131,19 +132,19 @@ class MovesCalculator
     attacked
   end
 
-  def under_pin?(piece, is_white, already_checker = nil)
-    if already_checker.nil?
-      board_clone = simulate_a_board_without_piece(piece.square)
-    else
-      board_clone = simulate_a_board_without_piece(piece.square, already_checker.square)
-    end
+  def under_pin?(piece, is_white, real_checker = nil)
+    board_clone = if real_checker.nil?
+                    simulate_a_board_without_piece(piece.square)
+                  else
+                    simulate_a_board_without_piece(piece.square, real_checker.square)
+                  end
     under_check?(is_white, board_clone)
   end
 
-  def simulate_a_board_without_piece(piece_square, already_checker_square = nil)
+  def simulate_a_board_without_piece(piece_square, real_checker = nil)
     board_clone = Marshal.load(Marshal.dump(board)) # deep copy trick
     board_clone.delete_piece(piece_square)
-    board_clone.delete_piece(already_checker_square) unless already_checker_square.nil?
+    board_clone.delete_piece(real_checker) unless real_checker.nil?
     board_clone
   end
 end

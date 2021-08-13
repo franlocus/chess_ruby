@@ -331,4 +331,3 @@ describe MovesCalculator do
     end
   end
 end
-
