@@ -339,7 +339,6 @@ describe MovesCalculator do
         subject.board.delete_piece([7, 5]) # delete knight
         subject.board.delete_piece([7, 6]) # delete bishop
         moves_controller.make_move([5, 4], [6, 2], player_black)
-        interface.display_score_board
         king = subject.board.king(true)
         checker = subject.checker(king)
         expect(subject.forced_pieces(king, checker)).to be_empty
@@ -353,8 +352,7 @@ describe MovesCalculator do
         moves_controller.make_move([0, 3], [5, 5], player_black)
         moves_controller.make_move([0, 1], [5, 4], player_black)
         moves_controller.make_move([0, 7], [4, 3], player_black)
-        
-        #moves_controller.make_move([5, 4], [6, 2], player_black)
+
         interface.display_score_board
         expect(subject.all_player_moves(true)).to be_empty
       end

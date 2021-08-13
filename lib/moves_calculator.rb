@@ -7,7 +7,7 @@ class MovesCalculator
     @board = board
   end
 
-  def legal_moves(coordinates) 
+  def legal_moves(coordinates)
     piece, color = fetch_piece_and_color(coordinates)
     if piece.is_a?(King)
       piece.moves(board, enemy_defended_squares(color))
@@ -128,7 +128,7 @@ class MovesCalculator
     attacked_squares.include?(king.square)
   end
 
-  def enemy_defended_squares(is_white, normal_simulated_board = self.board)
+  def enemy_defended_squares(is_white, normal_simulated_board = board)
     attacked = []
     normal_simulated_board.squares.each do |row|
       row.each do |square|
@@ -152,6 +152,7 @@ class MovesCalculator
   def simulate_a_board_without_piece(piece_square, real_checker = nil)
     board_clone = Marshal.load(Marshal.dump(board)) # deep copy trick
     board_clone.delete_piece(piece_square)
+    # delete real checker too, otherwise makes under_pin? return always true
     board_clone.delete_piece(real_checker) unless real_checker.nil?
     board_clone
   end

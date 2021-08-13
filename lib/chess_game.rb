@@ -31,9 +31,6 @@ class ChessGame
       switch_current_player
     end
   end
-  # que hacer hoy
-  # end condition
-  # save game
 
   def game_over?
     checkmate? || stalemate?
@@ -84,10 +81,10 @@ class ChessGame
   end
 
   def game_over
-    # puts current_player WIN
-    # checkmate?
-    # stalemate?
+    if checkmate?
+      puts  "#{current_player.is_white ? 'BLACK' : 'WHITE'} WINS by CHECKMATE!".reverse_color
+    else
+      puts  "It's a DRAW by STALEMATE!".reverse_color
+    end
   end
-
-  
 end
